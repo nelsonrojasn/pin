@@ -1,0 +1,9 @@
+<?php load_lib("session");?>
+<?= load_partial('templates/header')?>
+<h1>Hola mundo</h1>
+
+<?php if(Session::get('flash') !== null):?>
+	<span style="color: green"><?=Session::get('flash')?></span>
+<?php endif;?>
+
+<?= load_partial('templates/footer')?>

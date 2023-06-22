@@ -1,0 +1,22 @@
+<?php load_helper("html_tags");?>
+<?= load_partial('templates/header')?>
+
+<h1>Page#edit</h1>
+
+
+<?= form_tag("page/update");?>
+<?= label_tag("titulo", "Título");?><br>
+<?= text_field_tag("titulo");?><br>
+<?= label_tag("cuerpo", "Cuerpo");?><br>
+<?= text_area_tag("cuerpo");?><br>
+<?= label_tag("credit_card", "Tarjeta");?><br>
+<?= select_tag("credit_card", options_for_select([ "VISA", "MasterCard" ]), "Seleccione");?><br>
+<?= label_tag("usuario_id", "Usuario");?><br>
+<?= select_tag("usuario_id", options_for_dbselect($users, "nombre", "id"), "Seleccione");?><br>
+
+<?= submit_tag("Enviar");?>
+<?= link_to("page/show", "Cancelar");?>
+<br>
+<?= end_form_tag("page/update");?>
+
+<?= load_partial('templates/footer')?>

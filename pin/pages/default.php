@@ -7,5 +7,5 @@ function index()
 
 function redirigir()
 {
-	return redirect_to("page/show");
+	redirect_to("page/show");
 }

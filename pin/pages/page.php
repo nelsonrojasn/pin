@@ -9,7 +9,7 @@ function page_initializer()
 	if (Session::get("is_logged_in") !== true) {
 		//ir a la pagina inicial
 		Session::set("flash", "Debe iniciar sesión para acceder al recurso *<i>page</i>*");
-		return redirect_to("");
+		redirect_to("");
 	}
 }
 

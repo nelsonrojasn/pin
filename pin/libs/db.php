@@ -63,7 +63,7 @@ class Db
      * @param string $sql
      * @param array $parameters
      *
-     * @return array of associative arrays
+     * @return array
      */
     public static function findAll(string $sql, array $parameters = null)
     {
@@ -81,7 +81,7 @@ class Db
      * @param string $sql
      * @param array $parameters
      *
-     * @return associative array
+     * @return array
      */
     public static function findFirst(string $sql, array $parameters = null)
     {

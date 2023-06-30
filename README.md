@@ -2,6 +2,8 @@
 
 If you love PHP, but not the complexity of a massive framework, I've created Pin for simplify myself and my future works.
 
+Pin requires PHP 7.0 or greater.
+
 I try to explain it in a few steps
 
 **Pin** uses the Front Controller patern, it means that every request will be captured by the index.php file. The Front Controller translate the request into a **page** and an **action**. The **page** is just a php file, not a class, just a set of functions. The **action** corresponds to a function inside this file.

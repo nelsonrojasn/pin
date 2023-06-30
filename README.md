@@ -2,7 +2,7 @@
 
 If you love PHP, but not the complexity of a massive framework, I've created Pin for simplify myself and my future works.
 
-Pin requires PHP 7.0 or greater.
+Pin requires PHP 7.0 at least.
 
 I try to explain it in a few steps
 

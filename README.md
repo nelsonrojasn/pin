@@ -10,6 +10,8 @@ Is like a MVC framework, but using just functions. I've separated the business l
 
 Then, the result of applying logic is passed to the view.
 
+## Location of its components
+
 - Pages are located into pin/pages.
 - Views must be placed into pin/views.
 - You can include helpers into pin/helpers folder.

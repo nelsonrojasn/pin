@@ -10,6 +10,7 @@ Is like a MVC framework, but using just functions. I've separated the business l
 
 Then, the result of applying logic is passed to the view.
 
+
 ## Location of its components
 
 - Pages are located into pin/pages.
@@ -18,13 +19,16 @@ Then, the result of applying logic is passed to the view.
 - If you need to create classes for handling logic, please put them inside pin/libs folder.
 - Partials must be created in the pin/partials folder.
 
-There is a database class included inside the pin/libs (the Db class) that allow you to query and modify data in a database.
 
-To handle session variables, you can use the Session class that is placed in the same folder of Db class.
+## Utility clases
 
-Finally, there is a class to handle post and get requests elements: the Request class (in the same previous folder)
+There is a database class included inside the pin/libs (the **Db class**) that allow you to query and modify data in a database.
 
-The global class Load allow you to "load" different contents inside the pages or even in classes or views.
+To handle session variables, you can use the **Session class** that is placed in the same folder of Db class.
+
+Finally, there is a class to handle post and get requests elements: the **Request class** (in the same previous folder)
+
+The global class **Load** allow you to "include" different contents inside the pages or even in classes or views.
 
 Last, but not least, there are a set of functions that supporting write less code for loading css, js, draw forms, and other html ussesful elements.
 

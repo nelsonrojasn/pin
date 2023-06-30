@@ -4,7 +4,7 @@ If you love PHP, but not the complexity of a massive framework, I've created Pin
 
 I try to explain it in a few steps
 
-**Pin** uses the Front Controller patern, it means that every request will be captured by the index.php file. The Front Controller translate the request into a **page** and and **action**. The **page** is just a php file, not a class, just a set of functions. The **action** corresponds to a functions inside this file.
+**Pin** uses the Front Controller patern, it means that every request will be captured by the index.php file. The Front Controller translate the request into a **page** and an **action**. The **page** is just a php file, not a class, just a set of functions. The **action** corresponds to a function inside this file.
 
 Is like a MVC framework, but using just functions. I've separated the business logic (or just logic) on every function of the **pages**. You can create classes to encapsulate the logic outside of pages. It's up to you.
 

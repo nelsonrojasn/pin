@@ -98,7 +98,7 @@ function label_tag($field, $caption, $attributes = '')
 	return "<label for='$field' $attributes>$caption</label>\r\n";
 }
 
-function select_tag($name = '', $options, $include_blank = false, $attributes = '')
+function select_tag($name = '', $options='', $include_blank = false, $attributes = '')
 {
 	list($id, $name) = get_field_name_and_id($name);
 

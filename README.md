@@ -1,5 +1,8 @@
 # Pin
 
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/nelsonrojasn/pin/badges/quality-score.png?b=main)](https://scrutinizer-ci.com/g/nelsonrojasn/pin/?branch=main)
+[![Build Status](https://scrutinizer-ci.com/g/nelsonrojasn/pin/badges/build.png?b=main)](https://scrutinizer-ci.com/g/nelsonrojasn/pin/build-status/main)
+
 If you love PHP, but not the complexity of a massive framework, I've created Pin for simplify myself and my future works.
 
 Pin requires PHP 7.0 at least.

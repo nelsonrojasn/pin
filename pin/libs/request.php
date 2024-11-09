@@ -1,7 +1,9 @@
 <?php
 
 /**
+ * Request
  * Clase para gestionar los Requests POST y GET
+ * @author nelson rojas
  */
 class Request {
     /**

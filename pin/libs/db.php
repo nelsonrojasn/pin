@@ -4,7 +4,7 @@
  * Db
  * Clase para la gestión de acceso a la base de datos
  * y operaciones CRUD: Crear, Leer, update y Borrar
- *
+ * @author nelson rojas
  */
 class Db
 {
@@ -28,12 +28,14 @@ class Db
             return TRUE;
         }
 
+        $db_config = Config::getDbConfig();
+
         try {
             self::$_connection = new PDO(
-                DATABASE_DSN,
-                DATABASE_USER,
-                DATABASE_PASSWORD,
-                DATABASE_PARAMETERS
+                $db_config['dsn'],
+                $db_config['user'],
+                $db_config['password'],
+                $db_config['parameters']
             );
             return TRUE;
         } catch (Exception $e) {
@@ -63,7 +65,7 @@ class Db
      * @param string $sql
      * @param array $parameters
      *
-     * @return array
+     * @return array of associative arrays
      */
     public static function findAll(string $sql, array $parameters = null)
     {
@@ -81,7 +83,7 @@ class Db
      * @param string $sql
      * @param array $parameters
      *
-     * @return array
+     * @return associative array
      */
     public static function findFirst(string $sql, array $parameters = null)
     {

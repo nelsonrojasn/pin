@@ -2,10 +2,12 @@
 
 function index()
 {
-	load_view("default/index");
+	$template = new Template();
+	$template->saludo = "Saludo interno";
+	$template->render("default/index");
 }
 
 function redirigir()
 {
-	redirect_to("page/show");
+	return redirect_to("page/show");
 }

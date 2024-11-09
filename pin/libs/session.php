@@ -1,18 +1,20 @@
 <?php
 
 /**
+ * Session
  * Clase para gestionar variables de sesión. Ideal para autenticación 
  * o carros de compra
+ * @author nelson rojas
  */
 class Session
 {
 	/**
 	 * Permite obtener una entrada desde la variable $_SESSION
 	 * de acuerdo a su clave $key 
-	 * @param string $key
+	 * @param $key
 	 * @return mixed
 	 */
-	public static function get(string $key)
+	public static function get($key)
 	{
 		if (empty($_SESSION[$key])) {
 			return null;
@@ -24,11 +26,11 @@ class Session
 	/**
 	 * Permite crear una entrada en la variable $_SESSION
 	 * de acuerdo a su clave $key 
-	 * @param string $key
+	 * @param $key
 	 * @param mixed $value
 	 * @return void
 	 */
-	public static function set(string $key, $value)
+	public static function set($key, $value)
 	{
 		$_SESSION[$key] = $value;
 	}
@@ -36,10 +38,10 @@ class Session
 	/**
 	 * Permite eliminar una entrada en la variable $_SESSION
 	 * de acuerdo a su clave $key 
-	 * @param string $key
+	 * @param $key
 	 * @return void
 	 */
-	public static function delete(string $key)
+	public static function delete($key)
 	{
 		unset($_SESSION[$key]);
 	}

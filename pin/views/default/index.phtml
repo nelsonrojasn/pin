@@ -1,9 +1,6 @@
-<?php load_lib("session");?>
-<?= load_partial('templates/header')?>
-<h1>Hola mundo</h1>
+<h1>Bienvenido a Pin</h1>
 
-<?php if(Session::get('flash') !== null):?>
-	<span style="color: green"><?=Session::get('flash')?></span>
-<?php endif;?>
+<?= load_partial("flash")?>
 
-<?= load_partial('templates/footer')?>
+<p>Pin es un framework PHP minimalista que te permite crear aplicaciones web de manera sencilla y eficiente.</p>
+<p>Puedes usarlo para crear tu próxima aplicación web.</p>

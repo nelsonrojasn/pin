@@ -1,10 +1,8 @@
-<?php load_helper("html_tags");?>
-<?= load_partial('templates/header')?>
 <h1>Page#show</h1>
 
-<pre>
-	<?= var_dump($slug);?>
-	<?= var_dump($users);?>
-</pre>
+<h3>Slug: <?= $slug;?></h3>
 
-<?= load_partial('templates/footer')?>
+<?= link_to("page/edit", "Ver Formulario de Editar", 'class="btn btn-primary"')?>
+
+<?= link_to("page/show/contactenos", "Contactenos", 'class="btn btn-success"')?>
+

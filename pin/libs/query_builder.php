@@ -165,7 +165,7 @@ class QueryBuilder {
     /**
      * destruct
      */
-    function __destruct() {
+    public function __destruct() {
         $this->clear();
     }
 

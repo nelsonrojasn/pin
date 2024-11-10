@@ -3,7 +3,7 @@
 function index()
 {
 	$template = new Template();
-	$template->saludo = "Saludo interno";
+	$template->set("saludo", "Saludo interno");
 	$template->render("default/index");
 }
 

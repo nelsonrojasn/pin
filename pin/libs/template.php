@@ -18,22 +18,22 @@ class Template
 	private $_properties = [];
 
 	/**
-	 * Método mágico para setear propiedades
+	 * Método para setear propiedades
 	 * @param string $prop
 	 * @param mixed $value
 	 */
-	public function __set($prop, $value)
+	public function set($prop, $value)
 	{
 		$this->_properties[$prop] = $value;
 	}
 
 
 	/**
-	 * Método mágico para obtener propiedades
+	 * Método para obtener propiedades
 	 * @param string $prop
 	 * @return mixed|null
 	 */
-	public function __get($prop)
+	public function get($prop)
 	{
 		return isset($this->_properties[$prop]) ? $this->_properties[$prop] : null;
 	}

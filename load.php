@@ -8,8 +8,7 @@ function load_file($file, $extension, $base_dir, $classification, $parameters = 
 	if (file_exists($base_dir . $file . $extension)) {	
 		require $base_dir . $file . $extension;
 	} else {
-		throw (new Exception("$classification <b>$file</b> no existe!"));
-		return;		
+		throw (new Exception("$classification <b>$file</b> no existe!"));	
 	}
 }
 
@@ -42,12 +41,15 @@ function load_partial($partial, array $parameters = null)
 function redirect_to($url)
 {
 	$url = PUBLIC_PATH . $url;
-	header("Location: $url", 301);
+	header("Location: $url", true, 301);
 }
 
 //implementar autoloader para clases
+//espera que las clases se definan en PascalCase y los archivos
+//usen snake_case. Ejemplo class QueryBuilder, archivo query_builder.php
 spl_autoload_register(function($className){
-	$file = PIN_PATH . 'libs' . DS . strtolower($className) . '.php';
+	$file_name = strtolower(preg_replace('/(?<!^)[A-Z]/', '_$0', $className));
+	$file = PIN_PATH . 'libs' . DS . $file_name . '.php';
 	if (file_exists($file)) {
 		require_once $file;
 		return;
@@ -76,13 +78,13 @@ function handle_exception($exception)
     http_response_code($code);
 
     if (error_reporting() !== 0) {
-        
+        echo "<div style='padding: 40px;'>";
 		echo "<h1>Fatal error</h1>";
         echo "<p>Uncaught exception: '" . get_class($exception) . "'</p>";
         echo "<p>Message: '" . $exception->getMessage() . "'</p>";
         echo "<p>Stack trace:<pre>" . $exception->getTraceAsString() . "</pre></p>";
         echo "<p>Thrown in '" . $exception->getFile() . "' on line " . $exception->getLine() . "</p>";
-		
+		echo "</div>";
     }
 }
 
@@ -100,7 +102,6 @@ function load_page_from_url($url)
 		require PIN_PATH . 'pages' . DS . $page . '.php';
 	} else {
 		throw (new Exception("La página <b>$page</b> no existe!"));
-		return;
 	}
 	
 	$function_to_be_load = !empty($content[0]) ? trim($content[0]) : 'index';
@@ -114,7 +115,6 @@ function load_page_from_url($url)
 		call_user_func_array($function_to_be_load, $content);		
 	} else {
 		throw (new Exception("La función <b>$function_to_be_load</b> no existe en la página <b>$page</b>!"));
-		return;
 	}
     
 }

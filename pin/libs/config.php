@@ -8,9 +8,9 @@
 class Config
 {
 	private static $_db_config = [
-		'dsn' => "mysql:host=127.0.0.1;dbname=app;charset=utf8",
-		'user' => "nelson",
-		'password' => "s3cret",
+		'dsn' => "mysql:host=DB_HOST;dbname=DB_NAME;charset=utf8",
+		'user' => "USER_NAME",
+		'password' => "USER_PASSWORD",
 		'parameters' => [
 			PDO::ATTR_PERSISTENT => true, 
 		    PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,

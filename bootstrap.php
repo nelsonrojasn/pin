@@ -13,6 +13,5 @@ setlocale(LC_ALL, 'es_CL');
 
 //*Timezone*
 ini_set('date.timezone', 'America/Santiago');
-//date_default_timezone_set("America/Santiago");
 error_reporting(E_ALL ^ E_STRICT);
 ini_set('display_errors', 'On');

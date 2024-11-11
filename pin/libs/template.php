@@ -13,6 +13,11 @@ class Template
 	private $_template = 'default';
 
 	/**
+	 * @var string
+	 */
+	private $_title = '';
+
+	/**
 	 * @var array
 	 */
 	private $_properties = [];
@@ -39,13 +44,23 @@ class Template
 	}
 
 	/**
-	 * Permite setear el template manualmente
+	 * Permite asignar el template manualmente
 	 * @param string $template
 	 */
 	public function setTemplate($template)
 	{
 		$this->_template = $template;
 	}
+
+	/**
+	 * Permite asignar el title manualmente
+	 * @param string $title
+	 */
+	public function setTitle($title)
+	{
+		$this->_title = $title;
+	}
+
 
 
 	/**
@@ -60,6 +75,7 @@ class Template
 		load_view($view, $this->_properties);
 		$yield = ob_get_clean();
 		if (file_exists($template_file)) {
+			$title = $this->_title;
 			include $template_file;
 		} else {
 			throw new Exception("Archivo de template no encontrado $template_file", 1);

@@ -1,14 +1,18 @@
 <h1>Page#edit</h1>
-<?= load_partial("flash")?>
-<?= form_tag("page/update", 'method="post"');?>
-<?= label_tag("titulo", "Título");?><br>
-<?= text_field_tag("titulo");?><br>
-<?= label_tag("cuerpo", "Cuerpo");?><br>
-<?= text_area_tag("cuerpo");?><br>
-<?= label_tag("credit_card", "Tarjeta");?><br>
-<?= select_tag("credit_card", options_for_select([ "VISA", "MasterCard" ]), "Seleccione");?><br>
-
-<?= submit_tag("Enviar", 'class="btn btn-primary"');?>
-<?= link_to("page/show", "Cancelar", 'class="btn btn-default"');?>
-<br>
-<?= end_form_tag("page/update");?>
+<?= load_partial("flash") ?>
+<?= form_tag("page/update", 'method="post"'); ?>
+<div>
+    <?= label_tag("titulo", "Título"); ?>
+    <?= text_field_tag("titulo"); ?>
+</div>
+<div>
+    <?= label_tag("cuerpo", "Cuerpo"); ?>
+    <?= text_area_tag("cuerpo"); ?>
+</div>
+<div>
+    <?= label_tag("credit_card", "Tarjeta"); ?>
+    <?= select_tag("credit_card", options_for_select(["VISA", "MasterCard"]), "Seleccione"); ?>
+</div>
+<?= submit_tag("Enviar"); ?>
+<?= link_to("page/show", "Cancelar"); ?>
+<?= end_form_tag("page/update"); ?>

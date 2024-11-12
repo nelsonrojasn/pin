@@ -112,21 +112,21 @@ function load_page_from_url($url)
 	}
 	
 	$request_method = strtolower($_SERVER['REQUEST_METHOD']);
-	$api_function_to_be_load = $function_to_be_load;
+	$function_to_call = null;
 
-	if (!empty($request_method)) {
-		$api_function_to_be_load = $request_method;
-	}
-	
 	if (function_exists($function_to_be_load)) {
-		call_user_func_array($function_to_be_load, $content);		
+		$function_to_call = $function_to_be_load;		
 	} else {
-		if (function_exists($api_function_to_be_load)) {
+		if (function_exists($request_method)) {
+			$function_to_call = $request_method;
 			$content[] = $function_to_be_load;
-			call_user_func_array($api_function_to_be_load, $content);	
-		} else {
-			throw (new Exception("La función <b>$function_to_be_load</b> no existe en la página <b>$page</b>!"));	
-		}		
+		}
 	}
+
+	if (!empty($function_to_call)) {
+		call_user_func_array($function_to_call, $content);
+		return;
+	}
+	throw (new Exception("La función <b>$function_to_be_load</b> no existe en la página <b>$page</b>!"));	
     
 }

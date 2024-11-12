@@ -91,42 +91,56 @@ function handle_exception($exception)
 
 function load_page_from_url($url)
 {
-	$content = explode('/', $url);
-    //quitar el elemento inicial vacio
-    array_shift($content); 
-	
-	$page = !empty($content[0]) ? trim($content[0]) : 'default';
-	array_shift($content); 
-	
-	if (file_exists(PIN_PATH . 'pages' . DS . $page . '.php')) {
-		require PIN_PATH . 'pages' . DS . $page . '.php';
-	} else {
-		throw (new Exception("La página <b>$page</b> no existe!"));
-	}
-	
-	$function_to_be_load = !empty($content[0]) ? trim($content[0]) : 'index';
-	array_shift($content); 
+    // Validar entrada
+    if (!is_string($url)) {
+        throw new InvalidArgumentException('URL must be a string');
+    }
 
-	if (function_exists("page_initializer")) {
-		call_user_func("page_initializer");
-	}
-	
-	$request_method = strtolower($_SERVER['REQUEST_METHOD']);
-	$function_to_call = null;
-
-	if (function_exists($function_to_be_load)) {
-		$function_to_call = $function_to_be_load;		
-	} else {
-		if (function_exists($request_method)) {
-			$function_to_call = $request_method;
-			$content[] = $function_to_be_load;
-		}
-	}
-
-	if (!empty($function_to_call)) {
-		call_user_func_array($function_to_call, $content);
-		return;
-	}
-	throw (new Exception("La función <b>$function_to_be_load</b> no existe en la página <b>$page</b>!"));	
+    // Extraer componentes de la URL
+    $components = array_values(array_filter(explode('/', $url)));
     
+    // Determinar página y función
+    $page = $components[0] ?? 'default';
+    $function = $components[1] ?? 'index';
+    $params = array_slice($components, 2);
+    
+    // Validar existencia de la página
+    $page_path = PIN_PATH . 'pages' . DS . $page . '.php';
+    if (!file_exists($page_path)) {
+        throw new Exception("La página <b>$page</b> no existe!");
+    }
+    
+    require $page_path;
+    
+    // Ejecutar inicializador si existe
+    if (function_exists('page_initializer')) {
+        page_initializer();
+    }
+    
+    // Determinar la función a ejecutar
+    $function_to_call = determine_function_to_call($function);
+    
+    if (empty($function_to_call)) {
+        throw new Exception("La función <b>$function</b> no existe en la página <b>$page</b>!");
+    }
+    
+    return call_user_func_array($function_to_call, $params);
+}
+
+/**
+ * Determina qué función debe ser llamada basada en el nombre de la función
+ * y el método de la petición
+ */
+function determine_function_to_call($function)
+{
+    if (function_exists($function)) {
+        return $function;
+    }
+    
+    $request_method = strtolower($_SERVER['REQUEST_METHOD']);
+    if (function_exists($request_method)) {
+        return $request_method;
+    }
+    
+    return null;
 }

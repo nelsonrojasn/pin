@@ -3,6 +3,7 @@
 namespace Pin\Libs;
 use PDO;
 use Exception;
+use Pin\Libs\Config;
 
 /** 
  * Db

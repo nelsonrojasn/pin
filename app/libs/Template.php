@@ -1,5 +1,7 @@
 <?php
 
+namespace App\Libs;
+
 /**
  * Template
  * Clase para renderizar vistas dentro de una plantilla
@@ -69,16 +71,18 @@ class Template
 	 */
 	public function render($view)
 	{
+		
+		
 		$template_file = PIN_PATH . 'templates' . DS . $this->_template . '.phtml';
 		
 		ob_start();
-		load_view($view, $this->_properties);
+		\Pin\Libs\Load::view($view, $this->_properties);
 		$yield = ob_get_clean();
 		if (file_exists($template_file)) {
 			$title = $this->_title;
 			include $template_file;
 		} else {
-			throw new Exception("Archivo de template no encontrado $template_file", 1);
+			throw new \Exception("Archivo de template no encontrado $template_file", 1);
 		}
 	}
 }

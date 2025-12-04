@@ -7,24 +7,19 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
 
 require __DIR__ . "/bootstrap.php";
 
-
+// Obtener URL actual
 $url = isset($_SERVER['PATH_INFO']) ? $_SERVER['PATH_INFO'] : '/';
 
-//convenciones
-/*
-la $url contendrá como primer parámetro el nombre de una página,
-el segundo parámetro será un método que debe ejecutarse en dicha página
-si hay más parámetros deben pasarse a la función
-ejemplo: page/show/contactenos
-cargará la página page.php, y buscará una función llamada show a la que le
-pasará como parámetro contactenos
-*/
+// Cargar y registrar rutas
+$routes = require ROOT . DS . "routes.php";
 
-require ROOT . DS . "load.php";
+//cargar helpers globales
+\Pin\Libs\Load::helper('html_tags');
 
-load_helper("html_tags");
-
-load_page_from_url($url);
+// Crear router y ejecutar
+$router = new \App\Router();
+$router->registerRoutes($routes);
+$router->dispatch($url);
 
 
 

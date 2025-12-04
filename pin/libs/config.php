@@ -1,5 +1,8 @@
 <?php
 
+namespace Pin\Libs;
+use PDO;
+
 /**
  * Config
  * Clase para obtener la configuración de la base de datos

@@ -1,4 +1,6 @@
 <?php
+namespace Pin\Libs;
+
 /**
  * QueryBuilder
  * Clase encargada de generar consultas usando métodos de apoyo

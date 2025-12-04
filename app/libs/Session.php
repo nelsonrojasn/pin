@@ -1,5 +1,7 @@
 <?php
 
+namespace App\Libs;
+
 /**
  * Session
  * Clase para gestionar variables de sesión. Ideal para autenticación 

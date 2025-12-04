@@ -1,6 +1,10 @@
 <?php
 
-/**
+namespace Pin\Libs;
+use PDO;
+use Exception;
+
+/** 
  * Db
  * Clase para la gestión de acceso a la base de datos
  * y operaciones CRUD: Crear, Leer, update y Borrar

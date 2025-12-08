@@ -7,9 +7,10 @@ Si amas PHP, pero no la complejidad de un framework masivo, **Pin 2.0** es para 
 
 **Pin 2.0** representa una evolución significativa:
 - **Routing estático**: Rutas explícitas y predecibles en un único archivo (`routes.php`).
-- **Handlers namespaced**: Cada ruta mapea a una clase `Handler` dedicada con método único `handle()`.
-- **PSR-4 Autoloading**: Carga automática de clases con namespaces organizados.
-- **Separación clara**: Lógica de aplicación en handlers, utilidades en librerías namespaced.
+- **Handlers namespaced**: Cada ruta mapea a una clase `Handler` bajo `App\Handlers\*` con un único método `handle()`.
+- **Autoload PSR-4**: `app/Autoloader.php` mapea los namespaces `App\*` y `Pin\Libs\*`.
+- **Librerías core**: Utilidades bajo `Pin\Libs` (Router, Template, Session, etc.) reutilizadas por los handlers.
+- **Vistas claras**: Vistas, templates y partials viven en `app/views`.
 
 ---
 
@@ -35,50 +36,37 @@ Accede a `http://localhost:8000` en tu navegador.
 
 ```
 pin/
-├── app/                          # Código nuevo (namespaced)
-│   ├── Autoloader.php           # PSR-4 autoloader
-│   ├── Router.php               # Enrutador estático
-│   ├── handlers/                # Handlers (controllers)
-│   │   ├── Handler.php          # Clase base abstracta
+├── app/
+│   ├── Autoloader.php            # Autoloader PSR-4 para App\*
+│   ├── handlers/                 # Handlers namespaced
+│   │   ├── Handler.php           # Clase base abstracta
 │   │   ├── DefaultHandler.php
-│   │   ├── PageHandler.php
-│   │   └── LoginHandler.php
-│   └── libs/                    # Librerías namespaced
-│       ├── Session.php
-│       ├── Template.php
-│       └── Request.php
+│   │   ├── LoginHandler.php
+│   │   ├── LogoutHandler.php
+│   │   └── PageHandler.php
+│   ├── views/                    # Vistas de la aplicación
+│   │   ├── _shared/
+│   │   │   ├── partials/{navbar,flash}.phtml
+│   │   │   └── templates/default.phtml
+│   │   ├── default/index.phtml
+│   │   └── page/{show,edit}.phtml
+│   ├── helpers/                  # Placeholders para helpers propios
+│   ├── libs/                     # Placeholders para libs propias
+│   └── models/                   # Placeholders para modelos
 │
-├── pin/                          # Contenido específico del sitio
-│   ├── config/
-│   │   └── database.php
-│   ├── helpers/
-│   │   └── html_tags.php        # Funciones helper para HTML
-│   ├── libs/                    # Librerías core históricas
-│   │   ├── Load.php             # Carga dinámicas de archivos
-│   │   ├── Config.php
-│   │   ├── Db.php
-│   │   └── QueryBuilder.php
-│   ├── pages/                   # Pages legacy (deprecadas, migrar a handlers)
-│   ├── views/
-│   │   ├── default/
-│   │   ├── page/
-│   │   └── ...
-│   ├── partials/                # Fragmentos reutilizables
-│   │   ├── navbar.phtml
-│   │   ├── flash.phtml
-│   │   └── templates/
-│   ├── templates/               # Plantillas base
-│   │   └── default.phtml
-│   └── docs/                    # Documentación del sitio
+├── pin/                          # Librerías core históricas (namespace Pin\Libs)
+│   ├── helpers/html_tags.php
+│   └── libs/{Config,Db,Load,QueryBuilder,Request,Router,Session,Template}.php
 │
-├── css/                         # Hojas de estilos
-├── js/                          # JavaScript
-├── images/                      # Imágenes
+├── public/                       # Activos públicos
+│   ├── css/simple.css
+│   ├── js/
+│   └── images/pin.jpg
 │
-├── bootstrap.php                # Configuración inicial
-├── index.php                    # Punto de entrada (Front Controller)
-├── routes.php                   # Definición de rutas
-└── README.md                    # Este archivo
+├── bootstrap.php                 # Configuración inicial + autoloader
+├── index.php                     # Punto de entrada (Front Controller)
+├── routes.php                    # Definición de rutas estáticas
+└── docs/                         # Documentación
 ```
 
 ---
@@ -93,11 +81,13 @@ Todas las rutas se definen en `routes.php`:
 return [
     // Formato: 'MÉTODO /ruta' => 'NombreHandler'
     'GET /' => 'DefaultHandler',
+    'GET /login/signin' => 'LoginHandler',
+    'GET /login/signout' => 'LogoutHandler',
     'POST /login/signin' => 'LoginHandler',
     'POST /login/signout' => 'LoginHandler',
-    
-    // Con parámetros dinámicos
+    'GET /page/show' => 'PageHandler',
     'GET /page/show/{slug}' => 'PageHandler',
+    'GET /page/edit' => 'PageHandler',
     'POST /page/update' => 'PageHandler',
 ];
 ```
@@ -116,7 +106,7 @@ Los parámetros capturados se pasan como array al método `handle()` del handler
 
 ## Creando un Handler
 
-Los handlers son clases que heredan de `Handler` e implementan un método único `handle()`:
+Los handlers son clases bajo `App\Handlers` que heredan de `Handler` e implementan un método único `handle()`:
 
 ```php
 <?php
@@ -131,8 +121,7 @@ class MyNewHandler extends Handler
     public function handle(array $params = [])
     {
         $method = $_SERVER['REQUEST_METHOD'];
-        
-        // Lógica basada en el método HTTP
+
         if ($method === 'GET') {
             $this->showForm();
         } elseif ($method === 'POST') {
@@ -149,7 +138,6 @@ class MyNewHandler extends Handler
     
     private function processForm()
     {
-        // Procesar datos
         Session::set('flash', '¡Datos guardados!');
         $this->redirect('/');
     }
@@ -171,6 +159,14 @@ En `routes.php`:
 'GET /myform' => 'MyNewHandler',
 'POST /myform/save' => 'MyNewHandler',
 ```
+
+---
+
+## Vistas, templates y partials
+
+- Las vistas viven en `app/views`. Un `Template::render('products/list')` busca `app/views/products/list.phtml`.
+- Los templates viven en `app/views/_shared/templates`. El default es `default.phtml`.
+- Los partials compartidos (navbar, flash) viven en `app/views/_shared/partials`.
 
 ---
 
@@ -224,14 +220,14 @@ $template->render('products/index');
 Las variables asignadas con `set()` están disponibles en las vistas:
 
 ```php
-<!-- En pin/views/products/index.phtml -->
+<!-- En app/views/products/index.phtml -->
 <h1><?php echo $title; ?></h1>
 <p>Bienvenido, <?php echo $user['name']; ?></p>
 ```
 
 ### Request
 
-Accede a datos de solicitudes GET/POST:
+Accede a datos de solicitudes GET/POST (`App\Libs\Request`):
 
 ```php
 use App\Libs\Request;
@@ -378,7 +374,7 @@ class ProductListHandler extends Handler
 ### 3. Crear Vista
 
 ```html
-<!-- pin/views/products/list.phtml -->
+<!-- app/views/products/list.phtml -->
 <div class="container">
     <h1>Productos</h1>
     <a href="/products/new" class="btn btn-primary">Nuevo Producto</a>
@@ -476,7 +472,7 @@ class ProductHandler extends Handler {
 
 ## Recomendaciones
 
-- Lee la documentación en `pin/docs/` para detalles avanzados.
+- Lee la documentación en `docs/` para detalles avanzados.
 - Estudia los handlers existentes en `app/handlers/`.
 - Mantén las vistas (.phtml) simples; lógica compleja va en handlers.
 - Usa `Session` para estado del usuario; `Request` para entrada.

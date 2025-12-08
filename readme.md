@@ -227,10 +227,10 @@ Las variables asignadas con `set()` están disponibles en las vistas:
 
 ### Request
 
-Accede a datos de solicitudes GET/POST (`App\Libs\Request`):
+Accede a datos de solicitudes GET/POST (`Pin\Libs\Request`):
 
 ```php
-use App\Libs\Request;
+use Pin\Libs\Request;
 
 // Obtener parámetro POST
 $email = Request::post('email');
@@ -353,7 +353,7 @@ $results = Db::findAll($sql, [':cat' => 'electronics', ':price' => 100]);
 namespace App\Handlers;
 
 use Pin\Libs\Template;
-use App\Libs\Request;
+use Pin\Libs\Request;
 use Pin\Libs\Db;
 
 class ProductListHandler extends Handler

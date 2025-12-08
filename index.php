@@ -17,7 +17,7 @@ $routes = require ROOT . DS . "routes.php";
 \Pin\Libs\Load::helper('html_tags');
 
 // Crear router y ejecutar
-$router = new \App\Router();
+$router = new \Pin\Libs\Router();
 $router->registerRoutes($routes);
 $router->dispatch($url);
 

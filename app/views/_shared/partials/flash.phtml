@@ -1,0 +1,4 @@
+<?php if(\Pin\Libs\Session::get('flash') !== null):?>
+	<span style="color: green"><?=\Pin\Libs\Session::get('flash')?></span>
+    <?php \Pin\Libs\Session::delete("flash");?>
+<?php endif;?>

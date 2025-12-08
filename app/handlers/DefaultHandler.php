@@ -2,8 +2,8 @@
 
 namespace App\Handlers;
 
-use App\Libs\Template;
-use App\Libs\Session;
+use Pin\Libs\Template;
+use Pin\Libs\Session;
 
 /**
  * DefaultHandler

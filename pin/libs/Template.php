@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Libs;
+namespace Pin\Libs;
 
 /**
  * Template
@@ -73,7 +73,7 @@ class Template
 	{
 		
 		
-		$template_file = PIN_PATH . 'templates' . DS . $this->_template . '.phtml';
+		$template_file = APP_PATH . 'views' . DS . '_shared' . DS . 'templates' . DS . $this->_template . '.phtml';
 		
 		ob_start();
 		\Pin\Libs\Load::view($view, $this->_properties);

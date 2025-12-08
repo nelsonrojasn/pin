@@ -7,6 +7,9 @@ define('PIN_PATH', ROOT . DS . 'pin' . DS);
 define('APP_PATH', ROOT . DS . 'app' . DS);
 
 //establecer el directorio público (donde dejar los css, js, e imágenes)
+define('ASSETS_PATH', '/public/');
+
+//establecer la ruta para recibir las peticiones
 define('PUBLIC_PATH', '/');
 
 //*Locale*
@@ -22,6 +25,7 @@ require APP_PATH . 'Autoloader.php';
 \App\Autoloader::register();
 \App\Autoloader::addNamespace('App\\Handlers', APP_PATH . 'handlers');
 \App\Autoloader::addNamespace('App\\Libs', APP_PATH . 'libs');
+\App\Autoloader::addNamespace('App\\Models', APP_PATH . 'models');
 \App\Autoloader::addNamespace('App\\Helpers', APP_PATH . 'helpers');
 \App\Autoloader::addNamespace('App', APP_PATH);
 // Mapeo para clases históricas bajo el namespace Pin\\Libs
@@ -47,7 +51,7 @@ function handle_exception($exception)
     http_response_code($code);
 
     if (error_reporting() !== 0) {
-        echo "<div style='padding: 40px;'>";
+        echo "<div style='padding: 40px;font-family: Arial'>";
 		echo "<h1>Fatal error</h1>";
         echo "<p>Uncaught exception: '" . get_class($exception) . "'</p>";
         echo "<p>Message: '" . $exception->getMessage() . "'</p>";

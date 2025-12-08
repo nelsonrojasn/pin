@@ -39,12 +39,12 @@ class Load
 
     public static function view($view, $parameters = null)
     {
-        self::file($view, ".phtml", PIN_PATH . 'views' . DS, "Vista", $parameters);
+        self::file($view, ".phtml", APP_PATH . 'views' . DS, "Vista", $parameters);
     }
 
     public static function partial($partial, $parameters = null)
     {
-        self::file($partial, ".phtml", PIN_PATH . 'partials' . DS, "Parcial", $parameters);
+        self::file($partial, ".phtml", APP_PATH . 'views' . DS . '_shared' . DS . 'partials' . DS, "Parcial", $parameters);
     }
 
     public static function redirect($url)

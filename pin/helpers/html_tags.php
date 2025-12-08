@@ -6,7 +6,7 @@
  * @return string
  */
 function javascript_include_tag($src){
-	return "<script type='text/javascript' src='".PUBLIC_PATH."js/$src.js'></script>\r\n";
+	return "<script type='text/javascript' src='".ASSETS_PATH."js/$src.js'></script>\r\n";
 }
 
 /**
@@ -15,7 +15,7 @@ function javascript_include_tag($src){
  * @return string
  */
 function stylesheet_link($src=''){
-	return "<link rel='stylesheet' type='text/css' href='".PUBLIC_PATH."css/$src.css'/>\r\n";
+	return "<link rel='stylesheet' type='text/css' href='".ASSETS_PATH."css/$src.css'/>\r\n";
 }
 
 /**
@@ -36,7 +36,7 @@ function link_to($action, $text, $attributes=''){
  * @return string
  */
 function img_tag($img, $attributes=''){
-	return "<img src='".PUBLIC_PATH."img/$img' $attributes />\r\n";
+	return "<img src='".ASSETS_PATH."img/$img' $attributes />\r\n";
 }
 
 /**

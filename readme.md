@@ -123,8 +123,8 @@ Los handlers son clases que heredan de `Handler` e implementan un método único
 
 namespace App\Handlers;
 
-use App\Libs\Template;
-use App\Libs\Session;
+use Pin\Libs\Template;
+use Pin\Libs\Session;
 
 class MyNewHandler extends Handler
 {
@@ -181,7 +181,7 @@ En `routes.php`:
 Gestiona variables de sesión de forma segura:
 
 ```php
-use App\Libs\Session;
+use Pin\Libs\Session;
 
 // Establecer variable
 Session::set('user_id', 123);
@@ -206,7 +206,7 @@ Session::destroy();
 Renderiza vistas dentro de una plantilla:
 
 ```php
-use App\Libs\Template;
+use Pin\Libs\Template;
 
 $template = new Template();
 
@@ -356,7 +356,7 @@ $results = Db::findAll($sql, [':cat' => 'electronics', ':price' => 100]);
 
 namespace App\Handlers;
 
-use App\Libs\Template;
+use Pin\Libs\Template;
 use App\Libs\Request;
 use Pin\Libs\Db;
 
@@ -451,7 +451,7 @@ function show() {
 <?php
 namespace App\Handlers;
 
-use App\Libs\Template;
+use Pin\Libs\Template;
 
 class ProductHandler extends Handler {
     public function handle(array $params = []) {

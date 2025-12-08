@@ -2,7 +2,7 @@
 
 namespace App\Handlers;
 
-use App\Libs\Session;
+use Pin\Libs\Session;
 
 /**
  * LoginHandler

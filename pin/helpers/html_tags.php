@@ -51,6 +51,16 @@ function stylesheet_link($src=''){
 }
 
 /**
+ * resolve_url 
+ * @param string $url
+ * @return string
+ */
+function resolve_url(string $url)
+{
+    return PUBLIC_PATH . _html_tag_escape($url);
+}
+
+/**
  * link_to
  * @param string $action
  * @param string $text
@@ -183,12 +193,11 @@ function hidden_field_tag($name, $value='', $attributes=''){
  * check_box_tag
  * @param string $name
  * @param string $value
- * @param string $text
  * @param bool $checked
  * @param string|array $attributes
  * @return string
  */
-function check_box_tag($name, $value, $text, $checked=false, $attributes=''){
+function check_box_tag($name, $value, $checked=false, $attributes=''){
     list($id, $name) = get_field_name_and_id($name);
     $checked = $checked === true ? ' checked' : '';
 
@@ -305,7 +314,13 @@ function csrf_token(): string
         session_set(csrf_token_name(), bin2hex(random_bytes(32)));
     }
 
-    return session_get(csrf_token_name());
+    $token = session_get(csrf_token_name());
+    if (!is_string($token) || $token === '') {
+        $token = bin2hex(random_bytes(32));
+        session_set(csrf_token_name(), $token);
+    }
+
+    return $token;
 }
 
 function csrf_field_tag(): string

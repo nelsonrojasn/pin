@@ -1,20 +1,22 @@
-# Pin
+# Pin Zero
 
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/nelsonrojasn/pin/badges/quality-score.png?b=main)](https://scrutinizer-ci.com/g/nelsonrojasn/pin/?branch=main)
 [![Build Status](https://scrutinizer-ci.com/g/nelsonrojasn/pin/badges/build.png?b=main)](https://scrutinizer-ci.com/g/nelsonrojasn/pin/build-status/main)
 
 
-Si amas PHP, pero no la complejidad de un marco de trabajo masivo, entonces me gustaría presentarte a **Pin**. **Pin** es una herramienta que he creado para simplificarme a mí mismo y mis futuros trabajos que no requieren de funcionalidades complejas.
+Si te gusta PHP pero no quieres la complejidad de un marco pesado, te presento a **Pin Zero**. **Pin Zero** es una herramienta pequeña pensada para proyectos sencillos que no necesitan muchas funciones.
 
+Lo explico en pocas líneas.
 
-Intentaré explicarlo en unos pocos pasos.
+**Pin Zero** usa una sola entrada para todas las peticiones. El archivo `index.php` recibe cada solicitud y decide qué página y qué acción ejecutar. Esta forma de trabajar se llama controlador frontal. Una **página** es un archivo PHP que contiene funciones, no una clase. Una **acción** es una función dentro de ese archivo.
 
-**Pin** utiliza el patrón Front Controller, lo que significa que cada solicitud será capturada por el archivo index.php. El Front Controller traduce la solicitud en una **página** y una **acción**. La **página** es solo un archivo php, no una clase, solo un conjunto de funciones. La **acción** corresponde a una función dentro de este archivo.
+Es una versión básica de modelo-vista-controlador que usa solo funciones. La lógica de cada página se mantiene en su propio archivo; si quieres, puedes sacar parte de esa lógica a clases separadas.
 
-Es una simplificación de MVC, pero usando solo funciones. He separado la lógica de negocio (o simplemente lógica) en cada función de las **páginas**. Puedes crear clases para encapsular la lógica fuera de las páginas. Depende de ti.
+Después de ejecutar la lógica, el resultado se muestra en una vista.
 
-Luego, el resultado de aplicar la lógica se pasa a la vista.
+## Requisitos
 
+- PHP 8.0 o superior
 
 ## Ubicación de sus componentes
 
@@ -55,6 +57,6 @@ Puedes dirigirte a la documentación en la carpeta `pin/docs` para ejemplos espe
 - `pin/docs/REQUEST.md`
 - `pin/docs/DEVELOPER_EXPERIENCE.md`
 
-Por cierto, **Pin** funciona sin dependencias externas y está pensado para PHP moderno.
+Por cierto, **Pin Zero** funciona sin dependencias externas y está pensado para PHP moderno.
 
 ¡Saludos!

@@ -98,28 +98,31 @@ Funciones principales:
 
 La base de datos se configura en `bootstrap.php` con `DB_PATH` y el archivo SQLite en `db/app.sqlite`.
 
-Ver ejemplos más detallados y el uso de `QueryBuilder` en `pin/docs/DB_USAGE.md`.
+Ver ejemplos más detallados y el uso del ayudante `pin/helpers/query_builder.php` en `pin/docs/DB_USAGE.md`.
 
-Ejemplo de uso de `QueryBuilder` (opcional):
+Ejemplo de uso de las funciones del ayudante `pin/helpers/query_builder.php` (opcional):
 
 ```php
-$sql = (new QueryBuilder('posts'))
-	->columns('p.*, u.username')
-	->join('INNER JOIN users u ON p.user_id = u.id')
-	->where("p.published = 1")
-	->orderBy('p.created_at DESC')
-	->limit(10);
-
-$posts = db_find_all((string)$sql);
+$sql = qb_select('posts', [
+  'columns' => 'p.*, u.username',
+  'joins' => ['INNER JOIN users u ON p.user_id = u.id'],
+  'where' => 'p.published = 1',
+  'order' => 'p.created_at DESC',
+  'limit' => 10,
+]);
+$posts = db_find_all($sql);
 ```
 
-`QueryBuilder` es una ayuda opcional para SELECT sencillos; para consultas más complejas puedes usar SQL directo.
+El ayudante `pin/helpers/query_builder.php` es una ayuda opcional para SELECT sencillos; para consultas más complejas puedes usar SQL directo.
 
 ## HTML y formularios
 
-El helper `pin/helpers/html_tags.php` incluye funciones para generar etiquetas y campos de formulario con escape seguro:
-
+El helper `pin/helpers/html_tags.php` incluye funciones para generar etiquetas con escape seguro:
 - `link_to()`
+- `img_tag()`
+- `resolve_url()`
+
+El helper `pin/helpers/form_tags.php` incluye funciones para generar etiquetas y campos de formulario con escape seguro:
 - `form_tag()` / `end_form_tag()`
 - `text_field_tag()`
 - `password_field_tag()`

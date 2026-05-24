@@ -144,20 +144,32 @@ function user_posts($user_id) {
     );
 }
 
-    ### QueryBuilder (opcional)
+### QueryBuilder (opcional)
 
-    Si prefieres construir SELECT con métodos encadenados, `QueryBuilder` ofrece una forma simple:
+Si prefieres una API ligera y procedural para construir SELECT, hay helpers `qb_*` disponibles:
 
-    ```php
-    $sql = (new QueryBuilder('posts'))
-        ->columns('p.*, u.username')
-        ->join('INNER JOIN users u ON p.user_id = u.id')
-        ->where("p.published = 1")
-        ->orderBy('p.created_at DESC')
-        ->limit(10);
+```php
+$qb = qb('posts');
+$qb = qb_columns($qb, 'p.*, u.username');
+$qb = qb_join($qb, 'INNER JOIN users u ON p.user_id = u.id');
+$qb = qb_where($qb, 'p.published = 1');
+$qb = qb_order_by($qb, 'p.created_at DESC');
+$qb = qb_limit($qb, 10);
 
-    $posts = db_find_all((string)$sql);
-    ```
+$sql = qb_to_sql($qb);
+$posts = db_find_all($sql);
 
-    `QueryBuilder` es opcional; para consultas complejas sigue siendo recomendable usar SQL directo.
+//otro modo
+$sql = qb_select('posts', [
+  'columns' => 'p.*, u.username',
+  'joins' => ['INNER JOIN users u ON p.user_id = u.id'],
+  'where' => 'p.published = 1',
+  'order' => 'p.created_at DESC',
+  'limit' => 10,
+]);
+$posts = db_find_all($sql);
+
+```
+
+Estas funciones son opcionales; para consultas muy complejas sigue siendo recomendable escribir SQL directo.
 ```

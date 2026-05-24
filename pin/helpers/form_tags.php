@@ -23,6 +23,18 @@ function end_form_tag(){
     return "</form>\r\n";
 }
 
+/**
+ * label_tag
+ * @param string $field
+ * @param string $caption
+ * @param string|array $attributes
+ * @return string
+ */
+function label_tag($field, $caption, $attributes='') {
+    return "<label for='" . _html_tag_escape($field) . "'" . _html_tag_attributes($attributes) . ">" . _html_tag_escape($caption) . "</label>\r\n";
+}
+
+
 function submit_tag($caption, $attributes=''){
     return "<input type='submit' value='" . _html_tag_escape($caption) . "'" . _html_tag_attributes($attributes) . " />\r\n";
 }

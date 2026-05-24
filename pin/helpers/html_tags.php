@@ -82,17 +82,6 @@ function img_tag($img, $attributes=''){
 }
 
 /**
- * label_tag
- * @param string $field
- * @param string $caption
- * @param string|array $attributes
- * @return string
- */
-function label_tag($field, $caption, $attributes='') {
-    return "<label for='" . _html_tag_escape($field) . "'" . _html_tag_attributes($attributes) . ">" . _html_tag_escape($caption) . "</label>\r\n";
-}
-
-/**
  * js_redirect_to
  * @param string $action
  * @param float $seconds

@@ -47,8 +47,6 @@ En `load.php` también están las funciones principales:
 - `pin/libs` - funciones de soporte para DB, sesión y request
 - `db` - base de datos SQLite y datos persistentes
 
-Nota: `pin/libs/query_builder.php` es un helper opcional para construir consultas SELECT simples.
-
 ## Manejo de sesión y autenticación
 
 La autenticación se maneja con funciones de sesión simples:
@@ -97,23 +95,6 @@ Funciones principales:
 - `db_begin_transaction()`
 
 La base de datos se configura en `bootstrap.php` con `DB_PATH` y el archivo SQLite en `db/app.sqlite`.
-
-Ver ejemplos más detallados y el uso del ayudante `pin/helpers/query_builder.php` en `pin/docs/DB_USAGE.md`.
-
-Ejemplo de uso de las funciones del ayudante `pin/helpers/query_builder.php` (opcional):
-
-```php
-$sql = qb_select('posts', [
-  'columns' => 'p.*, u.username',
-  'joins' => ['INNER JOIN users u ON p.user_id = u.id'],
-  'where' => 'p.published = 1',
-  'order' => 'p.created_at DESC',
-  'limit' => 10,
-]);
-$posts = db_find_all($sql);
-```
-
-El ayudante `pin/helpers/query_builder.php` es una ayuda opcional para SELECT sencillos; para consultas más complejas puedes usar SQL directo.
 
 ## HTML y formularios
 

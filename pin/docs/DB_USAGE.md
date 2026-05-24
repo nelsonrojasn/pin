@@ -143,33 +143,4 @@ function user_posts($user_id) {
         [$user_id]
     );
 }
-
-### QueryBuilder (opcional)
-
-Si prefieres una API ligera y procedural para construir SELECT, hay helpers `qb_*` disponibles:
-
-```php
-$qb = qb('posts');
-$qb = qb_columns($qb, 'p.*, u.username');
-$qb = qb_join($qb, 'INNER JOIN users u ON p.user_id = u.id');
-$qb = qb_where($qb, 'p.published = 1');
-$qb = qb_order_by($qb, 'p.created_at DESC');
-$qb = qb_limit($qb, 10);
-
-$sql = qb_to_sql($qb);
-$posts = db_find_all($sql);
-
-//otro modo
-$sql = qb_select('posts', [
-  'columns' => 'p.*, u.username',
-  'joins' => ['INNER JOIN users u ON p.user_id = u.id'],
-  'where' => 'p.published = 1',
-  'order' => 'p.created_at DESC',
-  'limit' => 10,
-]);
-$posts = db_find_all($sql);
-
-```
-
-Estas funciones son opcionales; para consultas muy complejas sigue siendo recomendable escribir SQL directo.
 ```

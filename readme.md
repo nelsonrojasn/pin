@@ -57,7 +57,7 @@ Puedes dirigirte a la documentación en la carpeta `pin/docs` para ejemplos espe
 - `pin/docs/REQUEST.md`
 - `pin/docs/DEVELOPER_EXPERIENCE.md`
 
-Ver ejemplos detallados, incluido el uso del ayudante `query_builder`, en `pin/docs/DB_USAGE.md`.
+Ver ejemplos detallados, en `pin/docs/DB_USAGE.md`.
 
 Por cierto, **Pin Zero** funciona sin dependencias externas y está pensado para PHP moderno.
 

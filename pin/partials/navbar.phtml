@@ -2,7 +2,10 @@
   <nav>
     <?= link_to("", "Home") ?>
     <?= link_to("page/show", "Pages") ?>
-    <?= link_to("login/signin", "Login") ?>
-    <?= link_to("login/signout", "Logout") ?>
+    <?php if (session_get('is_logged_in') !== true): ?>
+        <?= link_to("login", "Login") ?>
+    <?php else: ?>
+        <?= link_to("login/signout", "Logout") ?>
+    <?php endif; ?>
   </nav>
 </header>

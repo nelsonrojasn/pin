@@ -1,4 +1,4 @@
-<?php if(Session::get('flash') !== null):?>
-	<span style="color: green"><?=Session::get('flash')?></span>
-    <?php Session::delete("flash");?>
+<?php if(session_has('flash')):?>
+	<span style="color: green"><?= html(session_get('flash')) ?></span>
+    <?php session_delete("flash");?>
 <?php endif;?>

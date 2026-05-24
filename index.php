@@ -22,9 +22,7 @@ pasará como parámetro contactenos
 
 require ROOT . DS . "load.php";
 
-load_helper("html_tags");
-
-load_page_from_url($url);
+route($url);
 
 
 

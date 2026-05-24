@@ -1,146 +1,101 @@
 <?php
 
-function load_file($file, $extension, $base_dir, $classification, $parameters = null)
+// Load database functions
+require PIN_PATH . 'libs' . DS . 'db.php';
+
+// Load session functions
+require PIN_PATH . 'libs' . DS . 'session.php';
+
+// Load request functions
+require PIN_PATH . 'libs' . DS . 'request.php';
+
+// Cargar helpers globals
+require_once PIN_PATH . 'helpers' . DS . 'html_tags.php';
+
+// Cargar vistas con parámetros locales
+function load_view(string $view, array|null $params = null)
 {
-	if (isset($parameters) && is_array($parameters)) {
-		extract($parameters);
-	}
-	if (file_exists($base_dir . $file . $extension)) {	
-		require $base_dir . $file . $extension;
-	} else {
-		throw (new Exception("$classification <b>$file</b> no existe!"));	
-	}
+    if ($params) extract($params);
+    require PIN_PATH . 'views' . DS . $view . '.phtml';
 }
 
-function load_lib($lib)
+// Cargar partials con parámetros locales
+function load_partial(string $partial, array|null $params = null)
 {
-	load_file($lib, ".php", PIN_PATH . 'libs' . DS, "Librería");
+    if ($params) extract($params);
+    require PIN_PATH . 'partials' . DS . $partial . '.phtml';
 }
 
-function load_config($config)
+// Cargar helpers
+function load_helper(string $helper)
 {
-	load_file($config, ".php", PIN_PATH . 'config' . DS, "Configuración");
+    require_once PIN_PATH . 'helpers' . DS . $helper . '.php';
 }
 
-
-function load_helper($helper)
+// Redirigir al navegador
+function redirect_to(string $url)
 {
-	load_file($helper, ".php", PIN_PATH . 'helpers' . DS, "Helper");
+    header('Location: ' . PUBLIC_PATH . $url, true, 301);
+    exit;
 }
 
-function load_view($view, array $parameters = null)
-{
-	load_file($view, ".phtml", PIN_PATH . 'views' . DS, "Vista", $parameters);
-}
-
-function load_partial($partial, array $parameters = null)
-{
-	load_file($partial, ".phtml", PIN_PATH . 'partials'. DS , "Parcial", $parameters);		
-}
-
-function redirect_to($url)
-{
-	$url = PUBLIC_PATH . $url;
-	header("Location: $url", true, 301);
-}
-
-//implementar autoloader para clases
-//espera que las clases se definan en PascalCase y los archivos
-//usen snake_case. Ejemplo class QueryBuilder, archivo query_builder.php
-spl_autoload_register(function($className){
-	$file_name = strtolower(preg_replace('/(?<!^)[A-Z]/', '_$0', $className));
-	$file = PIN_PATH . 'libs' . DS . $file_name . '.php';
-	if (file_exists($file)) {
-		require_once $file;
-		return;
-	} else {
-		throw new Exception("$className no existe en $file", 1);		
-	}
+// Autoloader: PascalCase → snake_case
+spl_autoload_register(function($className) {
+    $file = PIN_PATH . 'libs' . DS . strtolower(preg_replace('/(?<!^)[A-Z]/', '_$0', $className)) . '.php';
+    if (!file_exists($file)) {
+        throw new Exception("Clase no existe: $className ($file)");
+    }
+    require_once $file;
 });
 
+// Manejadores de error y excepción
+set_error_handler(fn($level, $msg, $file, $line) => 
+    throw new ErrorException($msg, 0, $level, $file, $line)
+);
 
-set_error_handler('handle_error');
-set_exception_handler('handle_exception');
-
-function handle_error($level, $message, $file, $line)
-{
-    if (error_reporting() !== 0) {  
-        throw new \ErrorException($message, 0, $level, $file, $line);
-    }
-}
-
-function handle_exception($exception)
-{
-    $code = $exception->getCode();
-    if ($code != 404) {
-        $code = 500;
-    }
+set_exception_handler(function($e) {
+    $code = ($e->getCode() === 404) ? 404 : 500;
     http_response_code($code);
-
-    if (error_reporting() !== 0) {
-        echo "<div style='padding: 40px;'>";
-		echo "<h1>Fatal error</h1>";
-        echo "<p>Uncaught exception: '" . get_class($exception) . "'</p>";
-        echo "<p>Message: '" . $exception->getMessage() . "'</p>";
-        echo "<p>Stack trace:<pre>" . $exception->getTraceAsString() . "</pre></p>";
-        echo "<p>Thrown in '" . $exception->getFile() . "' on line " . $exception->getLine() . "</p>";
-		echo "</div>";
+    
+    if (error_reporting()) {
+        echo "<div style='padding: 40px; font-family: monospace;'>";
+        echo "<h1>Error (" . $code . ")</h1>";
+        echo "<p><strong>" . get_class($e) . ":</strong> " . $e->getMessage() . "</p>";
+        echo "<pre>" . $e->getTraceAsString() . "</pre>";
+        echo "</div>";
     }
-}
+});
 
-
-function load_page_from_url($url)
+// Enrutador principal
+function route(string $url)
 {
     // Validar entrada
     if (!is_string($url)) {
-        throw new InvalidArgumentException('URL must be a string');
+        throw new InvalidArgumentException('URL debe ser string');
     }
 
-    // Extraer componentes de la URL
-    $components = array_values(array_filter(explode('/', $url)));
-    
-    // Determinar página y función
-    $page = $components[0] ?? 'default';
-    $function = $components[1] ?? 'index';
-    $params = array_slice($components, 2);
-    
-    // Validar existencia de la página
-    $page_path = PIN_PATH . 'pages' . DS . $page . '.php';
-    if (!file_exists($page_path)) {
-        throw new Exception("La página <b>$page</b> no existe!");
+    // Parsear URL: /page/show/slug → [page, show, slug]
+    $parts = array_values(array_filter(explode('/', $url)));
+    $page = $parts[0] ?? 'default';
+    $function = $parts[1] ?? 'index';
+    $args = array_slice($parts, 2);
+
+    // Cargar página
+    $file = PIN_PATH . 'pages' . DS . $page . '.php';
+    if (!file_exists($file)) {
+        throw new Exception("Página no existe: $page");
     }
-    
-    require $page_path;
-    
+    require $file;
+
     // Ejecutar inicializador si existe
     if (function_exists('page_initializer')) {
         page_initializer();
     }
-    
-    // Determinar la función a ejecutar
-    $function_to_call = determine_function_to_call($function);
-    
-    if (empty($function_to_call)) {
-        throw new Exception("La función <b>$function</b> no existe en la página <b>$page</b>!");
-    }
-    
-    return call_user_func_array($function_to_call, $params);
-}
 
-/**
- * Determina qué función debe ser llamada basada en el nombre de la función
- * y el método de la petición
- */
-function determine_function_to_call($function)
-{
-    if (function_exists($function)) {
-        return $function;
+    // Ejecutar función
+    if (!function_exists($function)) {
+        throw new Exception("Función no existe: $function en $page");
     }
-    
-    $request_method = strtolower($_SERVER['REQUEST_METHOD']);
-    if (function_exists($request_method)) {
-        return $request_method;
-    }
-    
-    return null;
+
+    return call_user_func_array($function, $args);
 }

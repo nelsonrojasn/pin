@@ -3,32 +3,26 @@
 
 function page_initializer()
 {
-	if (Session::get("is_logged_in") !== true) {
+	if (session_get("is_logged_in") !== true) {
 		//ir a la pagina inicial
-		Session::set("flash", "Debe iniciar sesión para acceder al recurso *<i>page</i>*");
+		session_set("flash", "Debe iniciar sesión para acceder al recurso *<i>page</i>*");
 		redirect_to("");
-		return;
 	}
 }
 
 function show($slug = '')
 {
-	$template = new Template();
-	$template->set("slug", $slug);
-	$template->render("page/show");
+	load_view("page/show", ["slug" => $slug]);
 }
 
 function edit()
 {
-	$template = new Template();
-	$template->render("page/edit");	
+	load_view("page/edit");
 }
 
 function update()
 {
-	$template = new Template();
-	Session::set("flash", "Página actualizada correctamente");
-	$template->render("page/edit");	
+    csrf_protect();
 }
 
 

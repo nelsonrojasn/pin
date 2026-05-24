@@ -1,0 +1,18 @@
+<?php load_partial("templates/header") ?>
+<h1>Iniciar sesión</h1>
+<?php load_partial("flash") ?>
+<?= form_tag("login/signin", 'method="post"'); ?>
+<?= csrf_field_tag(); ?>
+<div>
+    <?= label_tag("email", "Email") ?>
+    <?= text_field_tag("email", request_input('email', 'string')) ?>
+</div>
+<div>
+    <?= label_tag("password", "Clave") ?>
+    <?= password_field_tag("password") ?>
+</div>
+<div>
+    <?= submit_tag("Entrar") ?>
+</div>
+<?= end_form_tag() ?>
+<?php load_partial("templates/footer") ?>

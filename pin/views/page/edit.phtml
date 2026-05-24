@@ -1,6 +1,8 @@
+<?php load_partial("templates/header")?>
 <h1>Page#edit</h1>
-<?= load_partial("flash") ?>
+<?php load_partial("flash") ?>
 <?= form_tag("page/update", 'method="post"'); ?>
+<?= csrf_field_tag(); ?>
 <div>
     <?= label_tag("titulo", "Título"); ?>
     <?= text_field_tag("titulo"); ?>
@@ -16,3 +18,4 @@
 <?= submit_tag("Enviar"); ?>
 <?= link_to("page/show", "Cancelar"); ?>
 <?= end_form_tag("page/update"); ?>
+<?php load_partial("templates/footer")?>

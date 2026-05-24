@@ -1,9 +1,20 @@
 <?php
 
-define('DATABASE_DSN', "mysql:host=127.0.0.1;dbname=sistemadb;charset=utf8"); 
-define('DATABASE_USER', "nelson"); 
-define('DATABASE_PASSWORD', "secret"); 
-define('DATABASE_PARAMETERS', [
-	PDO::ATTR_PERSISTENT => true, 
-    PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-]); 
+/**
+ * Database Configuration (SQLite3)
+ * 
+ * Default engine: SQLite3 with performance optimizations
+ * - WAL mode for better concurrency
+ * - 64MB cache size
+ * - Memory-mapped I/O
+ * 
+ * Usage:
+ *   $rows = db_find_all("SELECT * FROM users WHERE id = ?", [1]);
+ *   $user = db_find_first("SELECT * FROM users WHERE id = ?", [1]);
+ *   $id = db_insert("users", ["name" => "John", "email" => "john@example.com"]);
+ *   db_update("users", ["name" => "Jane"], "WHERE id = :id");
+ *   db_delete("users", "WHERE id = :id");
+ */
+
+// Configuration now in bootstrap.php
+// DB_PATH, DB_HOST, DB_USER, DB_PASS 

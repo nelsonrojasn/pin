@@ -2,9 +2,7 @@
 
 function index()
 {
-	$template = new Template();
-	$template->set("saludo", "Saludo interno");
-	$template->render("default/index");
+	load_view("default/index", ["saludo" => "Saludo interno"]);
 }
 
 function redirigir()

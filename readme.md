@@ -18,30 +18,43 @@ Luego, el resultado de aplicar la lógica se pasa a la vista.
 
 ## Ubicación de sus componentes
 
-- Las páginas están ubicadas en pin/pages.
-- Las vistas deben colocarse en pin/views.
-- Puedes incluir ayudantes en la carpeta pin/helpers.
-- Si necesitas crear clases para manejar la lógica, por favor colócalas dentro de la carpeta pin/libs.
-- Los parciales deben crearse en la carpeta pin/partials.
-- Para hacer renderizado de vistas dentro de una plantilla se ha implementado una clase llamada Template, puedes encontrarla en pin/libs.
+- Las páginas están ubicadas en `pin/pages`.
+- Las vistas deben colocarse en `pin/views`.
+- Puedes incluir ayudantes en la carpeta `pin/helpers`.
+- Las utilidades y funciones planas están en `pin/libs`.
+- Los parciales deben crearse en la carpeta `pin/partials`.
 
+## Utilidades principales
 
-## Clases de utilidad
+Pin Zero evita clases innecesarias en el núcleo. Las funciones principales son:
 
-Hay una clase de base de datos incluida dentro de pin/libs (la **clase Db**) que te permite consultar y modificar datos en una base de datos.
+- `route()` - enrutador ligero de Front Controller a página/acción.
+- `load_view()` - carga vistas con parámetros.
+- `redirect_to()` - redirección HTTP simple.
+- `db_*()` - acceso a base de datos SQLite con funciones planas.
+- `session_*()` - manejo simple de sesión.
+- `request_*()` - entrada segura desde `$_POST` y `$_GET`.
+- `html()` - escape seguro para output HTML.
+- `csrf_field_tag()` / `csrf_meta_tag()` - CSRF seguro para formularios y JS.
 
-Para manejar variables de sesión, puedes usar la **clase Session** que se encuentra en la misma carpeta que la clase Db.
+El login de demostración está en `/login`. Usa estas credenciales de prueba:
 
-Finalmente, hay una clase para manejar elementos de solicitudes post y get: la **clase Request** (en la misma carpeta anterior).
+- Usuario: `admin`
+- Clave: `pin`
 
-La clase global **Load** te permite "incluir" diferentes contenidos dentro de las páginas o incluso en clases o vistas.
+El formulario de login usa CSRF y el control se valida con `csrf_protect()` en la acción `login/signin`.
 
-Por último, pero no menos importante, hay un conjunto de funciones que apoyan escribir menos código para cargar css, js, dibujar formularios y otros elementos html útiles.
+No necesitas entender clases estáticas para usar el núcleo.
 
-Es posible ver ejemplos de páginas dentro de la carpeta pin/pages para tener una idea de cómo funciona.
+Puedes dirigirte a la documentación en la carpeta `pin/docs` para ejemplos específicos.
 
-Puedes dirigirte a la documentación en la carpeta pin/docs para tener una idea de cómo funciona cada cosa y algunos ejemplos específicos.
+### Documentación recomendada
 
-Por cierto, **Pin** requiere como mínimo PHP 5.6.
+- `pin/docs/DB_USAGE.md`
+- `pin/docs/SESSION.md`
+- `pin/docs/REQUEST.md`
+- `pin/docs/DEVELOPER_EXPERIENCE.md`
+
+Por cierto, **Pin** funciona sin dependencias externas y está pensado para PHP moderno.
 
 ¡Saludos!

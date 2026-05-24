@@ -1,56 +1,37 @@
 <?php
 
 /**
- * Session
- * Clase para gestionar variables de sesión. Ideal para autenticación 
- * o carros de compra
- * @author nelson rojas
+ * Session management functions
  */
-class Session
+
+/**
+ * Get session value by key
+ */
+function session_get($key)
 {
-	/**
-	 * Permite obtener una entrada desde la variable $_SESSION
-	 * de acuerdo a su clave $key 
-	 * @param $key
-	 * @return mixed
-	 */
-	public static function get($key)
-	{
-		if (empty($_SESSION[$key])) {
-			return null;
-		}
+    return $_SESSION[$key] ?? null;
+}
 
-		return $_SESSION[$key];
-	}
+/**
+ * Set session value
+ */
+function session_set($key, $value)
+{
+    $_SESSION[$key] = $value;
+}
 
-	/**
-	 * Permite crear una entrada en la variable $_SESSION
-	 * de acuerdo a su clave $key 
-	 * @param $key
-	 * @param mixed $value
-	 * @return void
-	 */
-	public static function set($key, $value)
-	{
-		$_SESSION[$key] = $value;
-	}
+/**
+ * Delete session value
+ */
+function session_delete($key)
+{
+    unset($_SESSION[$key]);
+}
 
-	/**
-	 * Permite eliminar una entrada en la variable $_SESSION
-	 * de acuerdo a su clave $key 
-	 * @param $key
-	 * @return void
-	 */
-	public static function delete($key)
-	{
-		unset($_SESSION[$key]);
-	}
-
-	/**
-	 * Permite cerrar la sesión
-	 */
-	public static function destroy()
-	{
-		session_destroy();
-	}
+/**
+ * Check if session key exists
+ */
+function session_has($key): bool
+{
+    return isset($_SESSION[$key]);
 }

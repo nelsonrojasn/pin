@@ -1,256 +1,160 @@
 <?php
 
 /**
- * Db
- * Clase para la gestión de acceso a la base de datos
- * y operaciones CRUD: Crear, Leer, update y Borrar
- * @author nelson rojas
+ * Database functions for SQLite3
+ * Optimized for speed with WAL mode and performance PRAGMAs
  */
-class Db
+
+$_db_connection = null;
+
+/**
+ * Get or create database connection
+ * Applies performance optimizations for SQLite3
+ */
+function db_connection()
 {
-    /**
-     * Base de datos a la que se conecta
-     *
-     * @var PDO
-     */
-    private static $_connection = null;
-
-
-    /**
-     * Sirve para conectarse a la base de datos
-     * usando los parámetros de la clase Configuracion
-     * @throws Exception
-     */
-    private static function connect()
-    {
-
-        if (isset(self::$_connection)) {
-            return TRUE;
-        }
-
-        $db_config = Config::getDbConfig();
-
-        try {
-            self::$_connection = new PDO(
-                $db_config['dsn'],
-                $db_config['user'],
-                $db_config['password'],
-                $db_config['parameters']
-            );
-            return TRUE;
-        } catch (Exception $e) {
-            throw new Exception($e->getMessage());
-        }
+    global $_db_connection;
+    
+    if ($_db_connection !== null) {
+        return $_db_connection;
     }
 
-    /**
-     * Permite reutilizar sentencias para la ejecución de
-     * consultas parametrizadas
-     */
-    private static function _exec(string $sql, array $parameters = null)
-    {
-        self::connect();
+    try {
+        $_db_connection = new PDO(
+            DB_HOST,
+            DB_USER,
+            DB_PASS,
+            [
+                PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+                PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+            ]
+        );
 
-        $sentence = self::$_connection->prepare($sql);
-        if (is_array($parameters)) {
-            $sentence->execute($parameters);
-        } else {
-            $sentence->execute();
-        }
-        return $sentence;
+        // Performance optimizations for SQLite3
+        $_db_connection->exec('PRAGMA journal_mode = WAL');           // Write-Ahead Logging
+        $_db_connection->exec('PRAGMA synchronous = NORMAL');         // Balanced speed/safety
+        $_db_connection->exec('PRAGMA cache_size = -64000');          // 64MB cache
+        $_db_connection->exec('PRAGMA temp_store = MEMORY');          // Use RAM for temp
+        $_db_connection->exec('PRAGMA mmap_size = 30000000');         // Memory-mapped I/O
+        $_db_connection->exec('PRAGMA page_size = 4096');             // Page size
+        $_db_connection->exec('PRAGMA busy_timeout = 5000');          // 5s timeout
+
+        return $_db_connection;
+    } catch (PDOException $e) {
+        throw new Exception("Database connection error: " . $e->getMessage());
     }
+}
 
-    /**
-     * Obtiene filas (registros) desde la base de datos como array
-     * @param string $sql
-     * @param array $parameters
-     *
-     * @return array
-     */
-    public static function findAll(string $sql, array $parameters = null)
-    {
+/**
+ * Execute prepared statement
+ */
+function db_exec(string $sql, ?array $params = null)
+{
+    $stmt = db_connection()->prepare($sql);
+    $stmt->execute($params ?? []);
+    return $stmt;
+}
 
-        $sentence = self::_exec($sql, $parameters);
+/**
+ * Find all rows
+ */
+function db_find_all(string $sql, ?array $params = null): array
+{
+    $stmt = db_exec($sql, $params);
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
 
-        $rows = $sentence->fetchAll(PDO::FETCH_ASSOC);
-        $sentence->closeCursor();
+/**
+ * Find first row
+ */
+function db_find_first(string $sql, ?array $params = null): ?array
+{
+    $rows = db_find_all($sql, $params);
+    return count($rows) > 0 ? $rows[0] : null;
+}
 
-        return $rows;
+/**
+ * Get scalar value
+ */
+function db_get_scalar(string $sql, ?array $params = null)
+{
+    $stmt = db_exec($sql, $params);
+    $result = $stmt->fetch(PDO::FETCH_NUM);
+    return $result ? $result[0] : null;
+}
+
+/**
+ * Insert row and return last insert ID
+ */
+function db_insert(string $table, array $data): string
+{
+    $keys = implode(', ', array_keys($data));
+    $placeholders = implode(', ', array_map(fn($k) => ':' . $k, array_keys($data)));
+    $sql = "INSERT INTO $table ($keys) VALUES ($placeholders)";
+    
+    db_exec($sql, $data);
+    return db_connection()->lastInsertId();
+}
+
+/**
+ * Update rows
+ */
+function db_update(string $table, array $data, string $condition = ''): int
+{
+    $sets = implode(', ', array_map(fn($k) => "$k = :$k", array_keys($data)));
+    $sql = "UPDATE $table SET $sets";
+    
+    if (!empty($condition)) {
+        $sql .= " $condition";
     }
+    
+    $stmt = db_exec($sql, $data);
+    return $stmt->rowCount();
+}
 
-    /**
-     * Obtiene una fila (registro) desde la base de datos como array
-     * @param string $sql
-     * @param array $parameters
-     *
-     * @return array
-     */
-    public static function findFirst(string $sql, array $parameters = null)
-    {
-        $rows = self::findAll($sql, $parameters);
-        if (isset($rows) && count($rows) > 0) {
-            return $rows[0];
-        } else {
-            return null;
-        }
+/**
+ * Delete rows
+ */
+function db_delete(string $table, string $condition = ''): int
+{
+    $sql = "DELETE FROM $table";
+    
+    if (!empty($condition)) {
+        $sql .= " $condition";
     }
+    
+    $stmt = db_exec($sql);
+    return $stmt->rowCount();
+}
 
-    /**
-     * Obtiene un escalar (valor) desde la base de datos
-     * @param string $sql
-     *
-     * @return mixed
-     */
-    public static function getScalar(string $sql)
-    {
-        $sentence = self::_exec($sql);
+/**
+ * Run raw SQL
+ */
+function db_query(string $sql, ?array $params = null)
+{
+    return db_exec($sql, $params);
+}
 
-        $result = $sentence->fetch(PDO::FETCH_NUM);
-        $sentence->closeCursor();
+/**
+ * Transaction: begin
+ */
+function db_begin_transaction()
+{
+    db_connection()->beginTransaction();
+}
 
-        return !empty($result) ? $result[0] : null;
-    }
+/**
+ * Transaction: commit
+ */
+function db_commit()
+{
+    db_connection()->commit();
+}
 
-    /**
-     * Ejecuta sentencias SQL para Crear, update o delete
-     * Retorna la cantidad de filas afectadas con la consulta
-     * @param string $sql
-     * @param array $parameters
-     *
-     * @return int
-     */
-    private static function execute(string $sql, array $parameters = null)
-    {
-
-        $sentence = self::_exec($sql, $parameters);
-
-        $affectedRows = $sentence->rowCount();
-
-        return $affectedRows;
-    }
-
-    /**
-     * Genera y ejecuta SQL para agregar un registro en la tabla indicada
-     * Retorna último ID insertado
-     * @param string $table_name
-     * @param array $data
-     *
-     * @return string
-     */
-    public static function insert(string $table_name, array $data)
-    {
-        $attributes = '';
-        $values = '';
-        $parameters = [];
-
-        foreach ($data as $key => $value) {
-            $attributes .= $key . ',';
-            $values .= ':' . $key . ',';
-            $parameters[':' . $key] = $value;
-        }
-
-        $attributes = str_replace(',,', '', $attributes . ',');
-        $values = str_replace(',,', '', $values . ',');
-
-        $sql = "INSERT INTO " . $table_name . " (" . $attributes . ") ";
-        $sql .= " VALUES (" . $values . ")";
-
-        self::execute($sql, $parameters);
-
-        return self::$_connection->lastInsertId();
-    }
-
-    /**
-     * Genera y ejecuta SQL para actualizar uno o más registros en la tabla indicada
-     * Retorna cantidad de filas afectadas
-     * @param string $table_name
-     * @param array $data
-     * @param string $condition
-     *
-     * @return int
-     */
-    public static function update(string $table_name, array $data, string $condition = null)
-    {
-        $values = '';
-
-        $parameters = [];
-
-        foreach ($data as $key => $value) {
-            $values .= "$key = :$key,";
-            $parameters[':' . $key] = $value;
-        }
-
-        $values = str_replace(',,', '', $values . ',');
-
-        $sql = "UPDATE " . $table_name;
-        $sql .= " SET " . $values . " ";
-
-        if (!empty($condition)) {
-            $sql .= $condition;
-        }
-
-        return self::execute($sql, $parameters);
-    }
-
-    /**
-     * Genera y ejecuta SQL para eliminar uno o más registro en la tabla indicada
-     * Retorna cantidad de filas afectadas
-     * @param string $table_name
-     * @param string $condition
-     * @param array $parameters
-     *
-     * @return int
-     */
-    public static function delete(string $table_name, string $condition, array $parameters = null)
-    {
-        $sql = "DELETE FROM " . $table_name . " " . $condition;
-
-        return self::execute($sql, $parameters);
-    }
-
-
-    /**
-     * Permite cerrar la conexión a la base de datos
-     */
-    private static function _closeConnection()
-    {
-        self::$_connection = null;
-    }
-
-
-    /**
-     * Inicia una transacción en caso de requerirla
-     */
-    public static function beginTransaction()
-    {
-        self::$_connection->beginTransaction();
-    }
-
-
-    /**
-     * Acepta los cambios realizados dentro de la transacción
-     */
-    public static function commit()
-    {
-        self::$_connection->commit();
-    }
-
-
-    /**
-     * Rechaza los cambios realizados dentro de la transacción
-     */
-    public static function rollback()
-    {
-        self::$_connection->rollback();
-    }
-
-
-    /**
-     * Cierra la conexión una vez que el objeto sale de memoria
-     */
-    public function __destruct()
-    {
-        self::_closeConnection();
-    }
-
+/**
+ * Transaction: rollback
+ */
+function db_rollback()
+{
+    db_connection()->rollback();
 }

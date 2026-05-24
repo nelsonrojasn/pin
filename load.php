@@ -11,6 +11,7 @@ require PIN_PATH . 'libs' . DS . 'request.php';
 
 // Cargar helpers globals
 require_once PIN_PATH . 'helpers' . DS . 'html_tags.php';
+require_once PIN_PATH . 'helpers' . DS . 'form_tags.php';
 
 // Cargar vistas con parámetros locales
 function load_view(string $view, array|null $params = null)
@@ -69,11 +70,6 @@ set_exception_handler(function($e) {
 // Enrutador principal
 function route(string $url)
 {
-    // Validar entrada
-    if (!is_string($url)) {
-        throw new InvalidArgumentException('URL debe ser string');
-    }
-
     // Parsear URL: /page/show/slug → [page, show, slug]
     $parts = array_values(array_filter(explode('/', $url)));
     $page = $parts[0] ?? 'default';

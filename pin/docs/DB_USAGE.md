@@ -143,4 +143,21 @@ function user_posts($user_id) {
         [$user_id]
     );
 }
+
+    ### QueryBuilder (opcional)
+
+    Si prefieres construir SELECT con métodos encadenados, `QueryBuilder` ofrece una forma simple:
+
+    ```php
+    $sql = (new QueryBuilder('posts'))
+        ->columns('p.*, u.username')
+        ->join('INNER JOIN users u ON p.user_id = u.id')
+        ->where("p.published = 1")
+        ->orderBy('p.created_at DESC')
+        ->limit(10);
+
+    $posts = db_find_all((string)$sql);
+    ```
+
+    `QueryBuilder` es opcional; para consultas complejas sigue siendo recomendable usar SQL directo.
 ```

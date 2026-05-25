@@ -1,4 +1,6 @@
 <?php
+define('PIN_START_TIME', microtime(true));
+define('PIN_START_MEM', memory_get_usage());
 
 //cargar la sesion de php
 if (session_status() !== PHP_SESSION_ACTIVE) {

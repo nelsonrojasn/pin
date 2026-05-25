@@ -9,6 +9,9 @@ require PIN_PATH . 'libs' . DS . 'session.php';
 // Load request functions
 require PIN_PATH . 'libs' . DS . 'request.php';
 
+// Load acl functions
+require PIN_PATH . 'libs' . DS . 'acl.php';
+
 // Cargar helpers globals
 require_once PIN_PATH . 'helpers' . DS . 'html_tags.php';
 require_once PIN_PATH . 'helpers' . DS . 'form_tags.php';
@@ -70,27 +73,50 @@ set_exception_handler(function($e) {
 // Enrutador principal
 function route(string $url)
 {
-    // Parsear URL: /page/show/slug → [page, show, slug]
+    if (preg_match('/\.(sqlite|db|config|log)$/', $url)) {
+        throw new Exception("403 - Acceso prohibido.");
+    }
+    
     $parts = array_values(array_filter(explode('/', $url)));
-    $page = $parts[0] ?? 'default';
+    
+    // Limpieza de seguridad para evitar saltos de directorio
+    $page = str_replace(['.', '/'], '', $parts[0] ?? 'default');
     $function = $parts[1] ?? 'index';
     $args = array_slice($parts, 2);
 
-    // Cargar página
+    // Estrategia de búsqueda: 1. Público -> 2. Privado
     $file = PIN_PATH . 'pages' . DS . $page . '.php';
+    $is_private = false;
+
     if (!file_exists($file)) {
-        throw new Exception("Página no existe: $page");
+        $file = PIN_PATH . 'pages' . DS . 'private' . DS . $page . '.php';
+        $is_private = true;
     }
+
+    // Validación de existencia y seguridad
+    if (!file_exists($file)) {
+        throw new Exception("404 - El recurso solicitado no existe.");
+    }
+
+    if ($is_private && empty(session_get('is_logged_in'))) {
+        session_set('flash', 'Acceso restringido. Por favor, inicie sesión.');
+        redirect_to('');
+    }
+
+    if ($is_private && !has_permission($page, $function)) {
+        session_set('flash', 'Acceso restringido. Sin permisos para este recurso!');
+        redirect_to('');
+    }
+
     require $file;
 
-    // Ejecutar inicializador si existe
+    // Ciclo de vida de la página
     if (function_exists('page_initializer')) {
         page_initializer();
     }
 
-    // Ejecutar función
     if (!function_exists($function)) {
-        throw new Exception("Función no existe: $function en $page");
+        throw new Exception("404 - Acción no encontrada.");
     }
 
     return call_user_func_array($function, $args);

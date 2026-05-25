@@ -25,6 +25,7 @@ Después de ejecutar la lógica, el resultado se muestra en una vista.
 - Puedes incluir ayudantes en la carpeta `pin/helpers`.
 - Las utilidades y funciones planas están en `pin/libs`.
 - Los parciales deben crearse en la carpeta `pin/partials`.
+- Las páginas que requieran autenticación basta con crearlas en `pin/pages/private`.
 
 ## Utilidades principales
 
@@ -38,6 +39,8 @@ Pin Zero evita clases innecesarias en el núcleo. Las funciones principales son:
 - `request_*()` - entrada segura desde `$_POST` y `$_GET`.
 - `html()` - escape seguro para output HTML.
 - `csrf_field_tag()` / `csrf_meta_tag()` - CSRF seguro para formularios y JS.
+
+La función `route()` busca primero la página en la sección pública, y si no la encuentra la busca en la sección privada automáticamente, aplicando entonces el filtro de autenticación. Con esto tampoco es necesario cambiar las url para que apunten a la carpeta privada.
 
 El login de demostración está en `/login`. Usa estas credenciales de prueba:
 

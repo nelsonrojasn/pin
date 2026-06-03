@@ -5,6 +5,12 @@ const DS = DIRECTORY_SEPARATOR;
 define('ROOT', dirname(__FILE__)); 
 define('PIN_PATH', ROOT . DS . 'pin' . DS);
 
+/**
+* CLAVE DE ENCRIPTACION PARA DATOS SENSIBLES
+*
+**/
+define('CRIPTO_KEY', 'AX18-12aC4n7.@$%&@#');
+
 //establecer el directorio público (donde dejar los css, js, e imágenes)
 define('PUBLIC_PATH', '/');
 

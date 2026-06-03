@@ -99,14 +99,18 @@ function db_insert(string $table, array $data): string
 /**
  * Update rows
  */
-function db_update(string $table, array $data, string $condition = ''): int
+function db_update(string $table, array $data, string $condition, ?array $params = null): int
 {
     $sets = implode(', ', array_map(fn($k) => "$k = :$k", array_keys($data)));
     $sql = "UPDATE $table SET $sets";
     
     if (!empty($condition)) {
         $sql .= " $condition";
+    } else {
+        throw new Exception("Update condition is required to prevent accidental updates");
     }
+
+    $data = array_merge($data, $params ?? []);
     
     $stmt = db_exec($sql, $data);
     return $stmt->rowCount();
@@ -115,15 +119,17 @@ function db_update(string $table, array $data, string $condition = ''): int
 /**
  * Delete rows
  */
-function db_delete(string $table, string $condition = ''): int
+function db_delete(string $table, string $condition, ?array $params = null): int
 {
     $sql = "DELETE FROM $table";
     
     if (!empty($condition)) {
         $sql .= " $condition";
+    } else {
+        throw new Exception("Delete condition is required to prevent accidental deletions");
     }
     
-    $stmt = db_exec($sql);
+    $stmt = db_exec($sql, $params);
     return $stmt->rowCount();
 }
 

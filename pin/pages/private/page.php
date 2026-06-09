@@ -1,18 +1,26 @@
 <?php
 
-function show($slug = '')
+class PagePage
 {
-	load_view("page/show", ["slug" => $slug]);
-}
+	public function index()
+	{
+		load_view("page/index");
+	}
 
-function edit()
-{
-	load_view("page/edit");
-}
+	public function show($slug = '')
+	{
+		load_view("page/show", ["slug" => $slug]);
+	}
 
-function update()
-{
-    csrf_protect();
+	public function edit()
+	{
+		load_view("page/edit");
+	}
+
+	public function update()
+	{
+		csrf_protect();
+	}
 }
 
 

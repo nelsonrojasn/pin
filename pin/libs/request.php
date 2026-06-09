@@ -13,7 +13,7 @@
  */
 function request_post(string $key, string $type = 'string')
 {
-    if (!filter_has_var(INPUT_POST, $key)) {
+    if (!isset($_POST[$key])) {
         return null;
     }
 
@@ -25,7 +25,7 @@ function request_post(string $key, string $type = 'string')
  */
 function request_has_post(string $key): bool
 {
-    return filter_has_var(INPUT_POST, $key);
+    return isset($_POST[$key]);
 }
 
 /**
@@ -36,7 +36,7 @@ function request_has_post(string $key): bool
  */
 function request_get(string $key, string $type = 'string')
 {
-    if (!filter_has_var(INPUT_GET, $key)) {
+    if (!isset($_GET[$key])) {
         return null;
     }
 
@@ -48,7 +48,7 @@ function request_get(string $key, string $type = 'string')
  */
 function request_has_get(string $key): bool
 {
-    return filter_has_var(INPUT_GET, $key);
+    return isset($_GET[$key]);
 }
 
 /**
@@ -89,7 +89,8 @@ function _sanitize($value, string $type = 'string')
 
         case 'string':
         default:
-            return (string)$value;
+            // Limpiamos espacios y eliminamos null bytes para evitar envenenamiento de strings
+            return str_replace(chr(0), '', trim((string)$value));
     }
 }
 

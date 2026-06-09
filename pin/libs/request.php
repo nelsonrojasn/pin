@@ -89,7 +89,7 @@ function _sanitize($value, string $type = 'string')
 
         case 'string':
         default:
-            return htmlspecialchars((string)$value, ENT_QUOTES, 'UTF-8');
+            return (string)$value;
     }
 }
 
@@ -99,4 +99,97 @@ function _sanitize($value, string $type = 'string')
 function html($value): string
 {
     return htmlspecialchars((string)$value, ENT_QUOTES, 'UTF-8');
+}
+
+/**
+ * Validate and decrypt an encrypted URL hash
+ * @param string $encrypted_url - The encrypted URL hash from query param 'r'
+ * @return bool - True if valid and decryptable, false otherwise
+ */
+function is_valid_url_hash(string $encrypted_url): bool
+{
+    // Permitir URLs sin hash para páginas públicas
+    if (empty($encrypted_url) || $encrypted_url === '/') {
+        return true; 
+    }
+
+    $decrypted = desencriptar($encrypted_url, CRIPTO_KEY);
+    
+    // Si retorna vacío, significa que falló la validación de integridad (HMAC)
+    if (empty($decrypted)) {
+        return false;
+    }
+
+    // Validar que el formato desencriptado sea válido: ?page=xxx[&action=yyy[&param=val]]
+    // Debe contener al menos ?page=
+    return strpos($decrypted, '?page=') === 0;
+}
+
+/**
+ * Parse and decrypt an encrypted URL hash
+ * Extracts page, action, and parameters from the encrypted URL
+ * @param string $encrypted_url - The encrypted URL hash
+ * @return array - [page, action, parameters] where parameters is an associative array
+ * @throws Exception - If decryption fails or format is invalid
+ */
+function parse_url_hash(string $encrypted_url): array
+{
+    if (empty($encrypted_url) || $encrypted_url === '/') {
+        return ['default', 'index', []]; // Página por defecto para URLs vacías
+    }
+
+    $decrypted = desencriptar($encrypted_url, CRIPTO_KEY);
+    
+    if (empty($decrypted)) {
+        throw new Exception("URL inválida o manipulada.", 404);
+    }
+
+    // Remover el '?' inicial
+    if (strpos($decrypted, '?') === 0) {
+        $decrypted = substr($decrypted, 1);
+    }
+
+    // Parsear como query string
+    $parsed = [];
+    parse_str($decrypted, $parsed);
+
+    // Extraer componentes requeridos
+    $page = $parsed['page'] ?? null;
+    $action = $parsed['action'] ?? 'index';
+    
+    // Remover page y action del array para dejar solo los parámetros
+    unset($parsed['page'], $parsed['action']);
+    $parameters = $parsed;
+
+    if (!$page) {
+        throw new Exception("URL debe contener el parámetro 'page'.", 404);
+    }
+
+    return [$page, $action, $parameters];
+}
+
+/**
+ * Generate an encrypted URL hash for use in links
+ * @param string $page - The page name
+ * @param string|null $action - Optional action name (defaults to 'index')
+ * @param array $parameters - Optional additional parameters
+ * @return string - The encrypted URL hash
+ */
+function encrypt_url(string $page, ?string $action = null, array $parameters = []): string
+{
+    // Construir el query string
+    $query_parts = ['page' => $page];
+    
+    if ($action && $action !== 'index') {
+        $query_parts['action'] = $action;
+    }
+
+    // Añadir parámetros adicionales
+    $query_parts = array_merge($query_parts, $parameters);
+
+    // Generar query string
+    $query_string = '?' . http_build_query($query_parts);
+
+    // Encriptar y retornar
+    return encriptar($query_string, CRIPTO_KEY);
 }

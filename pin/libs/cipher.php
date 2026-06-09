@@ -12,12 +12,16 @@ function encriptar(string $dato, string $clave): string {
     $hmac = hash_hmac('sha256', $iv . $cifrado_raw, $clave, true); // 32 bytes
     
     // Empaquetamos todo secuencialmente: IV (16) + HMAC (32) + Datos Cifrados
-    return base64_encode($iv . $hmac . $cifrado_raw);
+    $b64 = base64_encode($iv . $hmac . $cifrado_raw);
+    return str_replace(['+', '/', '='], ['-', '_', ''], $b64);
 }
 
 function desencriptar(string $datoCifrado, string $clave): string {
     $metodo = 'aes-256-cbc';
-    $payload = base64_decode($datoCifrado);
+    $b64 = str_replace(['-', '_'], ['+', '/'], $datoCifrado);
+    // PHP maneja el padding (=) faltante de forma automática en base64_decode
+    $payload = base64_decode($b64);
+    
     
     $iv_longitud = openssl_cipher_iv_length($metodo); // 16
     $hmac_longitud = 32; // SHA256 raw son 32 bytes

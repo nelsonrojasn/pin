@@ -1,8 +1,30 @@
 <?php load_partial("templates/header")?>
-<h1>Bienvenido a Pin</h1>
+<h1><?= html($saludo) ?></h1>
 
 <?php load_partial("flash")?>
 
 <p>Pin es un framework PHP minimalista que te permite crear aplicaciones web de manera sencilla y eficiente.</p>
 <p>Puedes usarlo para crear tu próxima aplicación web.</p>
+
+<?php if (!$db_exists): ?>
+    <div style="background: #fff3cd; color: #856404; padding: 1rem; border: 1px solid #ffeeba; border-radius: 4px; margin: 1rem 0;">
+        <h3>🚀 Configuración Inicial</h3>
+        <p>Parece que la base de datos aún no ha sido creada.</p>
+        
+        <?php if ($setup_allowed): ?>
+            <p>Todo está listo para comenzar:</p>
+            <a href="<?= url('setup') ?>" style="display: inline-block; padding: 0.5rem 1rem; background: #856404; color: white; text-decoration: none; border-radius: 4px;">
+                Ejecutar Instalador (Setup)
+            </a>
+        <?php else: ?>
+            <p style="font-size: 0.9rem;">
+                ⚠️ Para inicializar el sistema, por favor define <code>define('ALLOW_SETUP', true);</code> 
+                en tu archivo <code>settings.php</code>.
+            </p>
+        <?php endif; ?>
+    </div>
+<?php endif; ?>
+
+<p>Esta es la página de inicio de tu nueva aplicación minimalista.</p>
+
 <?php load_partial("templates/footer")?>

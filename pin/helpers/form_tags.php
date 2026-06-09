@@ -42,7 +42,7 @@ function options_for_dbselect($data, $show, $value, $selected='')
     $code = "";
     foreach($data as $item) {
         $selected_tag = "";
-        if ($selected == $item[$value]) {
+        if ($selected !== '' && (string)$selected === (string)$item[$value]) {
             $selected_tag = " selected='selected' ";
         }
         $code .= "<option value='" . html($item[$value]) . "'" . $selected_tag . ">" . html($item[$show]) . "</option>\r\n";
@@ -55,7 +55,7 @@ function options_for_select($data, $selected='')
     $code = "";
     foreach($data as $key => $value) {
         $selected_tag = "";
-        if ($selected == $value) {
+        if ($selected !== '' && (string)$selected === (string)$key) {
             $selected_tag = " selected='selected' ";
         }
         $code .= "<option value='" . html($key) . "'" . $selected_tag . ">" . html($value) . "</option>\r\n";

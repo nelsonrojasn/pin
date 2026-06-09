@@ -4,15 +4,15 @@
 <form action="<?= url("login", "signin") ?>" method="post">
 <?= csrf_field_tag(); ?>
 <div>
-    <?= label_tag("email", "Email") ?>
-    <?= text_field_tag("email", request_input('email', 'string')) ?>
+    <label for="email">Email</label>
+    <input type="text" name="email" id="email" value="<?= get_value("email", "") ?>" required autofocus />
 </div>
 <div>
-    <?= label_tag("password", "Clave") ?>
-    <?= password_field_tag("password") ?>
+    <label for="password">Clave</label>
+    <input type="password" name="password" id="password" required />
 </div>
 <div>
-    <?= submit_tag("Entrar") ?>
+    <button type="submit" class="btn btn-primary">Entrar</button>
 </div>
 </form>
 <?php load_partial("templates/footer") ?>

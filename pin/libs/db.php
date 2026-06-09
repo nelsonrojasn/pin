@@ -76,7 +76,7 @@ function db_find_first(string $sql, ?array $params = null): ?array
 /**
  * Get scalar value
  */
-function db_get_scalar(string $sql, ?array $params = null)
+function db_get_scalar(string $sql, ?array $params = null): mixed
 {
     $stmt = db_exec($sql, $params);
     $result = $stmt->fetch(PDO::FETCH_NUM);

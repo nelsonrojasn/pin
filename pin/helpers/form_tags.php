@@ -11,7 +11,7 @@ function get_value(string $field, mixed $default = '')
     
     // 1. Buscamos en el input de la petición (POST/GET)
     // 2. Si no existe, buscamos en las variables globales (extraídas por load_view)
-    $data = request_input($key) ?? ($GLOBALS[$key] ?? null);
+    $data = request_input($key) ?? (isset($GLOBALS[$key]) ? $GLOBALS[$key] : null);
 
     if ($data === null) return $default;
     if (count($parts) === 1) return $data;

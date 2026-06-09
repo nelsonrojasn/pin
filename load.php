@@ -77,7 +77,10 @@ set_exception_handler(function($e) {
     if ($code < 400 || $code > 499) {
         $code = 500;
     }
-    http_response_code($code);
+
+    if (!headers_sent()) {
+        http_response_code($code);
+    }
     
     if (error_reporting()) {
         echo "<div style='padding: 40px; font-family: monospace;'>";

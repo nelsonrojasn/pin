@@ -1,11 +1,11 @@
 <header>
   <nav>
-    <?= link_to("", "Home") ?>
-    <?= link_to("page/show", "Pages") ?>
+    <a href="<?= PUBLIC_PATH ?>">Home</a>
+    <a href="<?= url("page") ?>">Pages</a>
     <?php if (session_get('is_logged_in') !== true): ?>
-        <?= link_to("login", "Login") ?>
+        <a href="<?= url("login") ?>">Login</a>
     <?php else: ?>
-        <?= link_to("login/signout", "Logout") ?>
+        <a href="<?= url("login", "signout") ?>">Logout</a>
     <?php endif; ?>
   </nav>
 </header>

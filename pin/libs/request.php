@@ -103,30 +103,6 @@ function html($value): string
 }
 
 /**
- * Validate and decrypt an encrypted URL hash
- * @param string $encrypted_url - The encrypted URL hash from query param 'r'
- * @return bool - True if valid and decryptable, false otherwise
- */
-function is_valid_url_hash(string $encrypted_url): bool
-{
-    // Permitir URLs sin hash para páginas públicas
-    if (empty($encrypted_url) || $encrypted_url === '/') {
-        return true; 
-    }
-
-    $decrypted = desencriptar($encrypted_url, CRIPTO_KEY);
-    
-    // Si retorna vacío, significa que falló la validación de integridad (HMAC)
-    if (empty($decrypted)) {
-        return false;
-    }
-
-    // Validar que el formato desencriptado sea válido: ?page=xxx[&action=yyy[&param=val]]
-    // Debe contener al menos ?page=
-    return strpos($decrypted, '?page=') === 0;
-}
-
-/**
  * Parse and decrypt an encrypted URL hash
  * Extracts page, action, and parameters from the encrypted URL
  * @param string $encrypted_url - The encrypted URL hash

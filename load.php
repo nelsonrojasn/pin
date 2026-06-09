@@ -87,7 +87,7 @@ set_exception_handler(function($e) {
         echo "</div>";
     } else {
         try {
-            load_view("errors/default", ['code' => $code]);
+            load_view("errors/default", ['code' => $code, 'exception' => $e]);
         } catch (Exception $fallback) {
             echo "<h1>Error {$code}</h1>";
             echo "<p>Lo sentimos, ha ocurrido un error inesperado.</p>";
@@ -103,10 +103,11 @@ function route(string $url)
 
     // 1. RESOLUCIÓN: Determinamos qué quiere el usuario (Cifrado o Home)
     if (!empty($r_param)) {
-        if (!is_valid_url_hash($r_param)) {
+        try {
+            list($page, $action, $parameters) = parse_url_hash($r_param);
+        } catch (Exception $e) {
             throw new Exception("404 - El recurso solicitado no existe.", 404);
         }
-        list($page, $action, $parameters) = parse_url_hash($r_param);
     } elseif ($url === '' || $url === '/') {
         // Escudo de contrabando: si no es 'r' ni '/', no se permiten parámetros $_GET sueltos
         if (count($_GET) > 0) {

@@ -15,8 +15,11 @@ require PIN_PATH . 'config' . DS . 'settings.php';
 // 1. Capturamos la URL limpia por PATH_INFO
 $url = $_SERVER['PATH_INFO'] ?? '/';
 
-ini_set("error_reporting", 0);
-ini_set("display_errors", 0);
+/**
+ * Activar en producción
+ */
+//ini_set("error_reporting", 0);
+//ini_set("display_errors", 0);
 
 require ROOT . DS . "load.php";
 route($url);

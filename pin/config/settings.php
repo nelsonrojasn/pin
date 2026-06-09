@@ -18,7 +18,9 @@ error_reporting(E_ALL);
 ini_set('display_errors', 'On');
 
 // Database Configuration (SQLite3 with performance optimizations)
-define('DB_PATH', '/var/www/pin_apps/db/blog.sqlite');
+define('DB_PATH', PIN_PATH . 'db' . DS. 'app.sqlite');
 define('DB_HOST', 'sqlite:' . DB_PATH);
 define('DB_USER', '');
 define('DB_PASS', '');
+
+define('ALLOW_SETUP', false);

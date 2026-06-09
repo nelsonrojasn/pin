@@ -17,6 +17,9 @@ function session_get($key)
  */
 function session_set($key, $value)
 {
+    if (session_status() !== PHP_SESSION_ACTIVE) {
+        session_start();
+    }
     $_SESSION[$key] = $value;
 }
 
@@ -25,6 +28,9 @@ function session_set($key, $value)
  */
 function session_delete($key)
 {
+    if (session_status() !== PHP_SESSION_ACTIVE) {
+        session_start();
+    }
     unset($_SESSION[$key]);
 }
 

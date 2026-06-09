@@ -1,95 +1,40 @@
 <?php
 
 /**
- * Alias for hidden form field names and auto-generated IDs.
+ * Obtiene un valor de la petición o del entorno global usando notación de puntos.
+ * Ejemplo: get_value("usuario.nombre")
  */
-function get_field_name_and_id($name)
+function get_value(string $field, mixed $default = '')
 {
-    $id = "";
-    if (strpos($name, ".") !== false) {
-        $items = explode(".", $name);
-        $id = " id='" . _html_tag_escape($items[0]) . "_" . _html_tag_escape($items[1]) . "' ";
-        $name = $items[0] . "[" . $items[1] . "]";
+    $parts = explode('.', $field);
+    $key = $parts[0];
+    
+    // 1. Buscamos en el input de la petición (POST/GET)
+    // 2. Si no existe, buscamos en las variables globales (extraídas por load_view)
+    $data = request_input($key) ?? ($GLOBALS[$key] ?? null);
+
+    if ($data === null) return $default;
+    if (count($parts) === 1) return $data;
+
+    // Navegamos por el array usando las partes restantes
+    foreach (array_slice($parts, 1) as $part) {
+        if (is_array($data) && array_key_exists($part, $data)) {
+            $data = $data[$part];
+        } else {
+            return $default;
+        }
     }
 
-    return [$id, _html_tag_escape($name)];
-}
-
-function form_tag($action, $attributes=''){
-    return "<form action='" . PUBLIC_PATH . _html_tag_escape($action) . "'" . _html_tag_attributes($attributes) . ">\r\n";
-}
-
-function end_form_tag(){
-    return "</form>\r\n";
-}
-
-/**
- * label_tag
- * @param string $field
- * @param string $caption
- * @param string|array $attributes
- * @return string
- */
-function label_tag($field, $caption, $attributes='') {
-    return "<label for='" . _html_tag_escape($field) . "'" . _html_tag_attributes($attributes) . ">" . _html_tag_escape($caption) . "</label>\r\n";
-}
-
-
-function submit_tag($caption, $attributes=''){
-    return "<input type='submit' value='" . _html_tag_escape($caption) . "'" . _html_tag_attributes($attributes) . " />\r\n";
-}
-
-function button_tag($caption, $type='button', $attributes=''){
-    return "<button type='" . _html_tag_escape($type) . "'" . _html_tag_attributes($attributes) . ">" . _html_tag_escape($caption) . "</button>\r\n";
-}
-
-function text_field_tag($name, $value='', $attributes=''){
-    list($id, $name) = get_field_name_and_id($name);
-
-    return "<input type='text' name='" . $name . "'" . $id . " value='" . _html_tag_escape($value) . "'" . _html_tag_attributes($attributes) . " />\r\n";
-}
-
-function password_field_tag($name, $value='', $attributes=''){
-    list($id, $name) = get_field_name_and_id($name);
-
-    return "<input type='password' name='" . $name . "'" . $id . " value='" . _html_tag_escape($value) . "'" . _html_tag_attributes($attributes) . " />\r\n";
-}
-
-function text_area_tag($name, $value='', $attributes=''){
-    list($id, $name) = get_field_name_and_id($name);
-
-    return "<textarea name='" . $name . "'" . $id . _html_tag_attributes($attributes) . ">" . _html_tag_escape($value) . "</textarea>\r\n";
-}
-
-function hidden_field_tag($name, $value='', $attributes=''){
-    list($id, $name) = get_field_name_and_id($name);
-
-    return "<input type='hidden' name='" . $name . "'" . $id . " value='" . _html_tag_escape($value) . "'" . _html_tag_attributes($attributes) . " />\r\n";
-}
-
-function check_box_tag($name, $value, $checked=false, $attributes=''){
-    list($id, $name) = get_field_name_and_id($name);
-    $checked = $checked === true ? ' checked' : '';
-
-    return "<input type='checkbox'" . $id . " name='" . $name . "' value='" . _html_tag_escape($value) . "'" . $checked . _html_tag_attributes($attributes) . "/>\r\n";
-}
-
-function radio_button_tag($name, $value, $checked=false, $attributes=''){
-    list($id, $name) = get_field_name_and_id($name);
-    $checked = $checked === true ? ' checked' : '';
-
-    return "<input type='radio'" . $id . " name='" . $name . "' value='" . _html_tag_escape($value) . "'" . $checked . _html_tag_attributes($attributes) . "/>\r\n";
+    return $data;
 }
 
 function select_tag($name, $options='', $include_blank=false, $attributes=''){
-    list($id, $name) = get_field_name_and_id($name);
-
     $code = "";
     if ($include_blank !== false) {
-        $code = "<option value=''>" . _html_tag_escape($include_blank) . "</option>\r\n";
+        $code = "<option value=''>" . html($include_blank) . "</option>\r\n";
     }
 
-    return "<select" . $id . " name='" . $name . "'" . _html_tag_attributes($attributes) . ">\r\n" . $code . $options . "</select>\r\n";
+    return "<select name='" . html($name) . "'" . _html_tag_attributes($attributes) . ">\r\n" . $code . $options . "</select>\r\n";
 }
 
 function options_for_dbselect($data, $show, $value, $selected='')
@@ -100,7 +45,7 @@ function options_for_dbselect($data, $show, $value, $selected='')
         if ($selected == $item[$value]) {
             $selected_tag = " selected='selected' ";
         }
-        $code .= "<option value='" . _html_tag_escape($item[$value]) . "'" . $selected_tag . ">" . _html_tag_escape($item[$show]) . "</option>\r\n";
+        $code .= "<option value='" . html($item[$value]) . "'" . $selected_tag . ">" . html($item[$show]) . "</option>\r\n";
     }
     return $code;
 }
@@ -113,7 +58,7 @@ function options_for_select($data, $selected='')
         if ($selected == $value) {
             $selected_tag = " selected='selected' ";
         }
-        $code .= "<option value='" . _html_tag_escape($key) . "'" . $selected_tag . ">" . _html_tag_escape($value) . "</option>\r\n";
+        $code .= "<option value='" . html($key) . "'" . $selected_tag . ">" . html($value) . "</option>\r\n";
     }
     return $code;
 }
@@ -140,12 +85,12 @@ function csrf_token(): string
 
 function csrf_field_tag(): string
 {
-    return hidden_field_tag(csrf_token_name(), csrf_token());
+    return "<input type='hidden' name='" . html(csrf_token_name()) . "' value='" . html(csrf_token()) . "' />\r\n";
 }
 
 function csrf_meta_tag(): string
 {
-    return "<meta name='csrf-token' content='" . _html_tag_escape(csrf_token()) . "'>\r\n";
+    return "<meta name='csrf-token' content='" . html(csrf_token()) . "'>\r\n";
 }
 
 function csrf_check(?string $token = null): bool

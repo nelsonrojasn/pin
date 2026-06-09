@@ -7,25 +7,16 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
     session_start();
 }
 
-require __DIR__ . "/bootstrap.php";
+define('ROOT', dirname(__FILE__)); 
+define('DS', DIRECTORY_SEPARATOR);
+const PIN_PATH = ROOT . DS . 'pin' . DS;
+require PIN_PATH . 'config' . DS . 'settings.php';
 
+// 1. Capturamos la URL limpia por PATH_INFO
+$url = $_SERVER['PATH_INFO'] ?? '/';
 
-$url = isset($_SERVER['PATH_INFO']) ? $_SERVER['PATH_INFO'] : '/';
-
-//convenciones
-/*
-la $url contendrá como primer parámetro el nombre de una página,
-el segundo parámetro será un método que debe ejecutarse en dicha página
-si hay más parámetros deben pasarse a la función
-ejemplo: page/show/contactenos
-cargará la página page.php, y buscará una función llamada show a la que le
-pasará como parámetro contactenos
-*/
+ini_set("error_reporting", 0);
+ini_set("display_errors", 0);
 
 require ROOT . DS . "load.php";
-
 route($url);
-
-
-
-

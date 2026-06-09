@@ -71,7 +71,7 @@ set_error_handler(fn($level, $msg, $file, $line) =>
     throw new ErrorException($msg, 0, $level, $file, $line)
 );
 
-set_exception_handler(function($e) {
+set_exception_handler(function(\Throwable $e) {
     $code = $e->getCode();
     // Si el código no es un error de cliente (4xx), asumimos error de servidor (500)
     if ($code < 400 || $code > 499) {

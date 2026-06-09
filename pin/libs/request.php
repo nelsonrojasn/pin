@@ -54,7 +54,7 @@ function request_has_get(string $key): bool
 /**
  * Get REQUEST value (POST > GET) with sanitization
  */
-function request_input(string $key, string $type = 'string')
+function request_input(string $key, string $type = 'string'): mixed
 {
     return request_post($key, $type) ?? request_get($key, $type);
 }
@@ -141,7 +141,6 @@ function parse_url_hash(string $encrypted_url): array
     if (!$page) {
         throw new Exception("URL debe contener el parámetro 'page'.", 404);
     }
-
     return [$page, $action, $parameters];
 }
 

@@ -2,9 +2,12 @@
 
 /**
  * Obtiene un valor de la petición o del entorno global usando notación de puntos.
- * Ejemplo: get_value("usuario.nombre")
+ * 
+ * @param string $field Nombre del campo (ej: "usuario.nombre")
+ * @param mixed $default Valor por defecto si no se encuentra
+ * @return mixed
  */
-function get_value(string $field, mixed $default = '')
+function get_value(string $field, mixed $default = ''): mixed
 {
     $parts = explode('.', $field);
     $key = $parts[0];
@@ -28,7 +31,16 @@ function get_value(string $field, mixed $default = '')
     return $data;
 }
 
-function select_tag($name, $options='', $include_blank=false, $attributes=''){
+/**
+ * Genera un tag SELECT de HTML
+ * 
+ * @param string $name Nombre del campo
+ * @param string $options HTML de las opciones
+ * @param string|bool $include_blank Texto para opción en blanco o false
+ * @param string|array $attributes Atributos adicionales
+ * @return string
+ */
+function select_tag(string $name, string $options = '', mixed $include_blank = false, mixed $attributes = ''): string {
     $code = "";
     if ($include_blank !== false) {
         $code = "<option value=''>" . html($include_blank) . "</option>\r\n";
@@ -37,7 +49,16 @@ function select_tag($name, $options='', $include_blank=false, $attributes=''){
     return "<select name='" . html($name) . "'" . _html_tag_attributes($attributes) . ">\r\n" . $code . $options . "</select>\r\n";
 }
 
-function options_for_dbselect($data, $show, $value, $selected='')
+/**
+ * Genera opciones para un select desde un array de base de datos
+ * 
+ * @param array $data Resultado de db_find_all
+ * @param string $show Campo a mostrar
+ * @param string $value Campo para el valor
+ * @param mixed $selected Valor seleccionado
+ * @return string
+ */
+function options_for_dbselect(array $data, string $show, string $value, mixed $selected = ''): string
 {
     $code = "";
     foreach($data as $item) {
@@ -50,7 +71,14 @@ function options_for_dbselect($data, $show, $value, $selected='')
     return $code;
 }
 
-function options_for_select($data, $selected='')
+/**
+ * Genera opciones para un select desde un array asociativo
+ * 
+ * @param array $data Array asociativo [valor => mostrar]
+ * @param mixed $selected Valor seleccionado
+ * @return string
+ */
+function options_for_select(array $data, mixed $selected = ''): string
 {
     $code = "";
     foreach($data as $key => $value) {

@@ -2,8 +2,11 @@
 
 /**
  * Build HTML attributes from string or array.
+ * 
+ * @param string|array $attributes
+ * @return string
  */
-function _html_tag_attributes($attributes)
+function _html_tag_attributes(mixed $attributes): string
 {
     if (empty($attributes)) {
         return '';
@@ -53,7 +56,15 @@ function asset(string $path)
     return PUBLIC_PATH . html($path);
 }
 
-function url(string $page, string $action = 'index', null|array $parameters = null)
+/**
+ * Genera una URL cifrada para Pin Zero
+ * 
+ * @param string $page Nombre de la página
+ * @param string $action Acción (default: index)
+ * @param array|null $parameters Parámetros adicionales
+ * @return string
+ */
+function url(string $page, string $action = 'index', ?array $parameters = null): string
 {
     // Usa encrypt_url() de request.php para encriptar la URL
     $encrypted = encrypt_url($page, $action, $parameters ?? []);

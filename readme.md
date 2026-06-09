@@ -6,22 +6,27 @@
 
 Si te gusta PHP pero no quieres la complejidad de un marco pesado, te presento a **Pin Zero**. **Pin Zero** es una herramienta pequeña pensada para proyectos sencillos que no necesitan muchas funciones.
 
-Lo explico en pocas líneas.
+## Filosofía
 
-**Pin Zero** usa una sola entrada para todas las peticiones. El archivo `index.php` recibe cada solicitud y decide qué página y qué acción ejecutar. Esta forma de trabajar se llama controlador frontal. Una **página** es un archivo PHP que contiene funciones, no una clase. Una **acción** es una función dentro de ese archivo.
+**Pin Zero** es un micro-framework de "Cero Dependencias" diseñado para aplicaciones donde la seguridad por ofuscación y el minimalismo son prioridades.
 
-Es una versión básica de modelo-vista-controlador que usa solo funciones. La lógica de cada página se mantiene en su propio archivo; si quieres, puedes sacar parte de esa lógica a clases separadas.
+### Características Principales
 
-Después de ejecutar la lógica, el resultado se muestra en una vista.
+- **Controlador Frontal Centralizado**: Todas las peticiones pasan por `index.php` y son gestionadas por `load.php`.
+- **Arquitectura Orientada a Objetos**: Las páginas ahora son clases (ej. `LoginPage`, `SetupPage`) donde cada método público es una acción ejecutable.
+- **Blindaje Criptográfico (URL Shield)**: Las rutas y parámetros no se exponen en texto plano. Se utiliza cifrado AES-256-CBC con firmas HMAC para evitar cualquier manipulación o descubrimiento de rutas (Anti-Fuzzing).
+- **ACL Empresarial**: Sistema de permisos multi-perfil, multi-recurso y soporte nativo para Multi-tenancy (Empresas/Inquilinos).
+- **Zero Dependencies**: Funciona exclusivamente con PHP moderno y SQLite, sin necesidad de Composer.
 
 ## Requisitos
 
 - PHP 8.0 o superior
+- Extensión `openssl` y `pdo_sqlite` habilitadas.
 
 ## Ubicación de sus componentes
 
 - Las páginas están ubicadas en `pin/pages`.
-- Las vistas deben colocarse en `pin/views`.
+- Las vistas están en `pin/views` (formato `.phtml`).
 - Puedes incluir ayudantes en la carpeta `pin/helpers`.
 - Las utilidades y funciones planas están en `pin/libs`.
 - Los parciales deben crearse en la carpeta `pin/partials`.

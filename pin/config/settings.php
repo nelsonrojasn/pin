@@ -4,7 +4,7 @@
 * CLAVE DE ENCRIPTACION PARA DATOS SENSIBLES
 *
 **/
-define('CRIPTO_KEY', 'AX18-12A.AaC4n7.@$%&@#');
+define('CRIPTO_KEY', hash('sha256', 'AX18-12A.AaC4n7.@$%&@#_PinZeroSecret', true)); // Clave de 32 bytes para AES-256
 
 //establecer el directorio público (donde dejar los css, js, e imágenes)
 define('PUBLIC_PATH', '/');

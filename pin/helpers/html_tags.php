@@ -68,7 +68,8 @@ function url(string $page, string $action = 'index', ?array $parameters = null):
 {
     // Usa encrypt_url() de request.php para encriptar la URL
     $encrypted = encrypt_url($page, $action, $parameters ?? []);
-    return PUBLIC_PATH . '?r=' . $encrypted;
+    // Sin rewrite, apuntamos explícitamente a index.php para garantizar compatibilidad
+    return PUBLIC_PATH . 'index.php?r=' . $encrypted;
 }
 
 /**

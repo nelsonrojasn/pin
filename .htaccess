@@ -1,2 +1,4 @@
+# Definimos el archivo de entrada por defecto
 DirectoryIndex index.php
-ErrorDocument 404 /index.php?page=404
+# Redirigimos errores 404 de Apache directamente al controlador para que Pin Zero decida
+ErrorDocument 404 /index.php

@@ -130,12 +130,17 @@ function parse_url_hash(string $encrypted_url): array
     $parsed = [];
     parse_str($decrypted, $parsed);
 
+    // Verificar integridad y expiración del sello de tiempo (TTL)
+    if (!isset($parsed['_ttl']) || (int)$parsed['_ttl'] < time()) {
+        throw new Exception("La URL ha expirado por seguridad.", 403);
+    }
+
     // Extraer componentes requeridos
     $page = $parsed['page'] ?? null;
     $action = $parsed['action'] ?? 'index';
     
-    // Remover page y action del array para dejar solo los parámetros
-    unset($parsed['page'], $parsed['action']);
+    // Limpiar parámetros internos antes de devolver el array al enrutador
+    unset($parsed['page'], $parsed['action'], $parsed['_ttl']);
     $parameters = $parsed;
 
     if (!$page) {
@@ -162,6 +167,9 @@ function encrypt_url(string $page, ?string $action = null, array $parameters = [
 
     // Añadir parámetros adicionales
     $query_parts = array_merge($query_parts, $parameters);
+
+    // Añadir el sello de tiempo para "quemar" la URL (time() + 300 segundos)
+    $query_parts['_ttl'] = time() + 300;
 
     // Generar query string
     $query_string = '?' . http_build_query($query_parts);

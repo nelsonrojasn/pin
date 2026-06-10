@@ -88,6 +88,7 @@ set_exception_handler(function(\Throwable $e) {
         echo "<h1 style='color: #d32f2f;'>Error " . $code . "</h1>";
         echo "<p><strong>" . get_class($e) . ":</strong> " . $e->getMessage() . "</p>";
         echo "<pre style='background: #eee; padding: 15px; overflow-x: auto;'>" . $e->getTraceAsString() . "</pre>";
+        echo "<a href='".PUBLIC_PATH . "'>Volver</a>";
         echo "</div>";
     } else {
         try {

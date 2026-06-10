@@ -46,13 +46,13 @@ db_insert('logs', [
 ✅ **Bien:**
 `db_find_all("SELECT * FROM users WHERE name = :name", ['name' => $name])`
 
-## Integración con Form Helpers
+## Integración con la Vista
 
 Puedes usar `options_for_dbselect` para llenar select tags directamente desde la base de datos:
 
 ```php
-<?php
-$roles = db_find_all("SELECT id, role_name FROM roles");
-echo select_tag('role_id', options_for_dbselect($roles, 'role_name', 'id'));
-?>
+<?php $roles = db_find_all("SELECT id, role_name FROM roles"); ?>
+<select name="role_id">
+    <?php echo options_for_dbselect($roles, 'role_name', 'id'); ?>
+</select>
 ```

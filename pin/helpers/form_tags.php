@@ -32,24 +32,6 @@ function get_value(string $field, mixed $default = ''): mixed
 }
 
 /**
- * Genera un tag SELECT de HTML
- * 
- * @param string $name Nombre del campo
- * @param string $options HTML de las opciones
- * @param string|bool $include_blank Texto para opción en blanco o false
- * @param string|array $attributes Atributos adicionales
- * @return string
- */
-function select_tag(string $name, string $options = '', mixed $include_blank = false, mixed $attributes = ''): string {
-    $code = "";
-    if ($include_blank !== false) {
-        $code = "<option value=''>" . html($include_blank) . "</option>\r\n";
-    }
-
-    return "<select name='" . html($name) . "'" . _html_tag_attributes($attributes) . ">\r\n" . $code . $options . "</select>\r\n";
-}
-
-/**
  * Genera opciones para un select desde un array de base de datos
  * 
  * @param array $data Resultado de db_find_all

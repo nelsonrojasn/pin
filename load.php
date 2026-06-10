@@ -53,6 +53,7 @@ function load_helper(string $helper)
 function redirect_to(string $url)
 {
     $base = defined('PUBLIC_PATH') ? PUBLIC_PATH : '/';
+    session_set('_pin_bypass_limit', true);
     header('Location: ' . $base . ltrim($url, '/'), true, 302);
     exit;
 }
@@ -104,10 +105,12 @@ set_exception_handler(function(\Throwable $e) {
 function route(string $url)
 {
     // 0. Rate Limiting Inteligente
+    $bypass = session_get('_pin_bypass_limit');
+    session_delete('_pin_bypass_limit');
+
     $last_request = session_get('_pin_last_req') ?? 0;
     $current_time = microtime(true);
-    
-    if (defined('RATE_LIMIT_MS') && RATE_LIMIT_MS > 0) {
+    if (!$bypass && defined('RATE_LIMIT_MS') && RATE_LIMIT_MS > 0) {
         if (($current_time - $last_request) < (RATE_LIMIT_MS / 1000)) {
             throw new Exception('Demasiadas peticiones. Por favor, espere un momento.', 429);
         }

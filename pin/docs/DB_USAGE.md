@@ -10,7 +10,8 @@ El sistema expone funciones planas para interactuar con la base de datos de form
 
 - `db_find_all(string $sql, array $params = [])`: Retorna un array con todos los registros encontrados.
 - `db_find_first(string $sql, array $params = [])`: Retorna un solo registro (el primero) o `null`.
-- `db_get_scalar(string $sql, array $params = [])`: Retorna un valor único (ej: el resultado de un `COUNT(*)`).
+- `db_get_scalar(string $sql, array $params = [])`: Retorna un valor único (ej: el resultado de un `COUNT(*)`). La primera columna de la primera fila será devuelta.
+
 
 ### Ejemplo de Uso
 
@@ -34,7 +35,34 @@ db_insert('logs', [
     'event' => 'login_success',
     'created_at' => date('Y-m-d H:i:s')
 ]);
+/* 
+INSERT INTO logs (event, created_at) VALUES (:event, :created_at) 
+*/
 ```
+
+- `db_update(string $table, array $data, string $condition, ?array $params = null)`: Actualiza un registro a partir de un array asociativo.
+- `db_delete(string $table, string $condition, ?array $params = null)`: Elimina un registro.
+
+```php  
+$rows_deleted = db_delete('users', 'id = ?', [1]);
+/* 
+DELETE FROM users WHERE id = ? 
+*/
+
+$data = ['status' => 'inactive'];
+$rows_updated = db_update('users', $data, 'id = ?', [1]);
+/* 
+UPDATE users SET status = :status WHERE id = ? 
+*/
+```
+
+### Transacciones
+- `db_begin_transaction()`: Inicia una transacción.
+- `db_commit()`: Confirma la transacción.
+- `db_rollback()`: Deshace la transacción.
+
+En caso de crear múltiples registros, existirá un mayor rendimiento si se usa una transacción en vez de instrucciones atómicas.
+
 
 ## Seguridad
 

@@ -27,6 +27,6 @@ define('DB_PASS', '');
 define('MAX_REQUEST_SIZE', 5 * 1024 * 1024);
 
 // Tiempo mínimo entre peticiones en milisegundos (0 para desactivar)
-define('RATE_LIMIT_MS', 200);
+define('RATE_LIMIT_MS', 1000);
 
 define('ALLOW_SETUP', false);

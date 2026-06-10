@@ -90,8 +90,10 @@ set_exception_handler(function(\Throwable $e) {
         echo "</div>";
     } else {
         try {
+            error_log("Pin Zero Error [" . $code . "]: " . $e->getMessage() . " in " . $e->getFile() . ":" . $e->getLine());
             load_view("errors/default", ['code' => $code, 'exception' => $e]);
         } catch (Exception $fallback) {
+            error_log("Pin Zero Critical Fallback: " . $fallback->getMessage());
             echo "<h1>Error {$code}</h1>";
             echo "<p>Lo sentimos, ha ocurrido un error inesperado.</p>";
         }
@@ -101,7 +103,17 @@ set_exception_handler(function(\Throwable $e) {
 // Enrutador principal (Evolución a POO)
 function route(string $url)
 {
-    $allowed_pages = include PIN_PATH . 'config' . DS . 'routes.php';
+    // 0. Rate Limiting Inteligente
+    $last_request = session_get('_pin_last_req') ?? 0;
+    $current_time = microtime(true);
+    
+    if (defined('RATE_LIMIT_MS') && RATE_LIMIT_MS > 0) {
+        if (($current_time - $last_request) < (RATE_LIMIT_MS / 1000)) {
+            throw new Exception('Demasiadas peticiones. Por favor, espere un momento.', 429);
+        }
+    }
+
+    $allowed_pages = require PIN_PATH . 'config' . DS . 'routes.php';
     $r_param = request_get('r', 'string');
 
     // 1. RESOLUCIÓN: Determinamos qué quiere el usuario (Cifrado o Home)
@@ -138,6 +150,9 @@ function route(string $url)
             redirect_to('/');
         }
     }
+
+    // Solo actualizamos el timestamp si pasamos los filtros de seguridad y no hubo redirección
+    session_set('_pin_last_req', $current_time);
 
     $file = PIN_PATH . 'pages' . DS . ($is_private ? 'private' . DS : '') . $page . '.php';
     if (!file_exists($file)) {

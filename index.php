@@ -18,15 +18,6 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
     session_start();
 }
 
-// 0.1 Escudo contra peticiones consecutivas (Rate Limiting por Sesión)
-$last_request = $_SESSION['_pin_last_req'] ?? 0;
-$current_time = microtime(true);
-if (RATE_LIMIT_MS > 0 && ($current_time - $last_request) < (RATE_LIMIT_MS / 1000)) {
-    http_response_code(429);
-    exit('Error 429: Demasiadas peticiones. Por favor, espere un momento.');
-}
-$_SESSION['_pin_last_req'] = $current_time;
-
 // 1. Capturamos la URL limpia por PATH_INFO
 $url = $_SERVER['PATH_INFO'] ?? '/';
 
